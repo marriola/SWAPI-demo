@@ -1,0 +1,140 @@
+body {
+	background-color: #222;
+	color: #ddd;
+}
+
+a {
+	color: #8f0;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #f80;
+}
+
+a:active {
+	color: #222;
+	background-color: #8f0;
+}
+
+button, select {
+	background-color: black;
+	color: white;
+	border: 0px;
+	border-radius: 3px;
+	margin: 3px;
+}
+
+button:hover {
+	background-color: #444;
+}
+
+button[disabled] {
+	background-color: transparent;
+	border: 1px solid #777;
+}
+
+#columnFilter {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 600px;
+	background-color: #666;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#columns label {
+	display: block;
+}
+
+.closed::after {
+	content: '▼';
+}
+
+.open::after {
+	content: '▲';
+}
+
+.columnPage {
+	display: inline-block;
+}
+
+.columnNameHeader {
+	display: table;
+	width: 100%;
+}
+
+.columnName {
+	display: table-cell;
+	background-color: #666;
+	color: #222;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.columnName.selected {
+	background-color: #222;
+	color: #666;
+}
+
+.bold {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#overlay {
+	position: fixed;
+	background: rgba(0, 0, 0, .5);
+	top: 0px;
+	height: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+#entity-popup {
+	position: fixed;
+	width: 600px;
+	height: 400px;
+	top: 50%;
+	left: 50%;
+	margin-top: -200px;
+	margin-left: -300px;
+	overflow: auto;
+	
+	background-color: #666;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#entity-popup table {
+	width: 100%;
+}
+
+.link {
+	display: inline-block;
+	background-color: #666;
+	border-radius: 5px;
+	padding: 2px;
+	margin: 2px;
+}
+
+.link[fill-me-in]:after {
+	content: "[click]";
+}
+
+tr:nth-child(even) {
+	background-color: #333;
+}
+
+tr:nth-child(odd) {
+	background-color: #444;
+}
+
+.fade-out-transition {
+	transition: all .3s ease;
+}
+
+.fade-out-enter, .fade-out-leave {
+	opacity: 0;
+	width: 0px;
+}

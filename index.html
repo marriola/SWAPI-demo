@@ -1,0 +1,106 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="sw-demo.css">
+</head>
+<body>
+<select id="resources" v-model="selected" @change="selectResource">
+	<option v-for="resource in resources" value="{{ $index }}">{{ resource.displayName }}</option>
+</select>
+<br/>
+
+
+<button id="btnPrev" disabled>&lt;&lt;</button>
+<button id="btnGet" disabled>Get</button>
+<button id="btnNext" disabled>&gt;&gt;</button>
+ 
+ 
+<div id="columnFilter" style="display: none;">
+	<a id="columnFilterExpand" href="javascript:void(0)"><div>
+		<h3 style="display: inline-block; margin: 0px;">Columns</h3>
+		<span id="expandIndicator" style="float: right;" class="closed"></span>
+	</div></a>
+	<div id="columns" style="display: none;">
+		<div class="columnNameHeader">
+			<a v-for="resource in resources" href="javascript:void(0)" class="columnName" @click="showColumns(resource)" data-index="{{ resource.index }}">
+				<h4>{{ resource.displayName }}</h4>
+			</a>
+		</div>
+
+		<div v-for="resource in resources" style="display: none" class="columnPage" data-index="{{ resource.index }}">
+			<div class="columnContainer">
+				<label v-for="column in resource.columns" v-bind:class="{ 'bold': column.hasUrl }">
+					<input type="checkbox" name="{{ column.originalName }}" v-model="column.show">
+					{{ column.displayName }}
+				</label>
+			</div>
+		</div>
+	</div>
+</div>
+ 
+ 
+<div id="entity-template" style="display: none;">
+	<table>
+		<thead>
+			<tr>
+				<th v-for="column in resource.columns" v-if="column.show" transition="fade-out">{{ column.displayName }}</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<tr v-for="result in results">
+				<td v-for="column in resource.columns" v-if="column.show" transition="fade-out">
+					<template v-if="isArray(result[column.originalName])">
+						<a v-for="(index, url) in result[column.originalName]" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" fill-me-in>{{ linkStore[url] }}</a>
+					</template>
+					<template v-else>
+						<template v-if="column.hasUrl">
+							<a href="{{ result[column.originalName] }}" class="link" @click="clickLink(column, result[column.originalName], $event)" fill-me-in>{{ linkStore[result[column.originalName]] }}</a>
+						</template>
+						<template v-else>
+							{{ result[column.originalName] }}
+						</template>
+					</template>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<p>Displaying results <b>{{ (page - 1) * 10 + 1 }}</b> to <b>{{ (page - 1) * 10 + results.length }}</b> out of <b>{{ count }}</b></p>
+</div>
+
+
+<div id="overlay" style="display: none"></div>
+
+<div id="entity-popup-template" style="display: none">
+	<table>
+		<tbody>
+			<tr v-for="column in columns">
+				<td>{{ column.displayName }}</td>
+				
+				<td v-if="isArray(result[column.originalName])">
+					<a v-for="(index, url) in result[column.originalName]" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" fill-me-in>{{ linkStore[url] }}</a>
+				</td>
+				
+				<td v-else>
+					<template v-if="column.hasUrl">
+						<a href="{{ result[column.originalName] }}" @click="clickLink(column, result[column.originalName], $event)" class="link" fill-me-in>{{ linkStore[result[column.originalName]] }}</a>
+					</template>
+					<template v-else>{{ result[column.originalName] }}</template>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<!--<script src="https://code.jquery.com/jquery-2.2.3.js"></script>-->
+<!--<script src="http://cdn.jsdelivr.net/vue/1.0.16/vue.js"></script>-->
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/vue/1.0.21/vue.min.js"></script>
+<script src="sw-demo.es5.min.js"></script>
+
+<style type="text/css">
+</style>
+</body>
+</html>

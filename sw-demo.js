@@ -32,6 +32,7 @@ let $demo = (function () {
 	};
 
 	let VueDemo = {
+		waiting: {},
 		linkStore: (localStorage.linkStore && JSON.parse(localStorage.linkStore)) || {},
 		
 		resourcesView: {
@@ -314,14 +315,26 @@ let $demo = (function () {
 		if (!RESOLVE_LINKS)
 			return;
 		
-		$(".not-set", selector).each((idx, elt) => {
+		let $links = $(".not-set");
+		let count = $links.length;
+		
+		console.log(`Resolving ${count} links...`);
+		
+		$links.each((idx, elt) => {
 			let url = elt.getAttribute("href");
-			if (VueDemo.linkStore[url]) {
+			
+			if (VueDemo.waiting[url]) {
+				--count;
+				return;
+			} else if (VueDemo.linkStore[url]) {
 				$(`[href='${url}']`)
 					.text(VueDemo.linkStore[url])
 					.removeClass("not-set");
+				--count;
 				return;
 			}
+			
+			VueDemo.waiting[url] = true;
 			
 			$.ajax({
 				type: "GET",
@@ -333,9 +346,10 @@ let $demo = (function () {
 						.removeClass("not-set");
 					VueDemo.linkStore[url] = name;
 					
-					let count = $(".not-set", selector).length;
+					--count;
 					if (count == 0) {
 						localStorage.linkStore = JSON.stringify(VueDemo.linkStore);
+						console.log("Done.");
 					}
 				}
 			});

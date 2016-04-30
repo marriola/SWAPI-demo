@@ -4,8 +4,11 @@ body {
 }
 
 #please-wait {
-	width: 32px;
-	height: 32px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -32px;
+	margin-left: -32px;
 	background: no-repeat center url('ajax-loader-lg.gif');
 }
 
@@ -16,13 +19,13 @@ body {
 	top: 0px;
 	left: 0px;
 	width: 100%;
-	height: 100px;
+	height: 104px;
 	background-color: #111;
 	border-bottom: 1px solid white;
 }
 
 #rest {
-	margin-top: 100px;
+	margin-top: 104px;
 	padding-top: 10px;
 }
 
@@ -53,19 +56,26 @@ a.not-set {
 }
 
 button, select {
-	background-color: black;
-	color: white;
+	background-color: gray;
+	color: black;
 	border: 0px;
-	border-radius: 3px;
+	border-radius: 5px;
 	margin: 3px;
+	font-size: 12px;
 }
 
-button:hover {
+button:active {
+	color: gray;
+	background: black;
+}
+
+/* button:hover {
 	background-color: #444;
 }
-
+ */
 button[disabled] {
 	background-color: transparent;
+	color: #777;
 	border: 1px solid #777;
 }
 
@@ -76,6 +86,10 @@ button[disabled] {
 	background-color: #666;
 	border-radius: 5px;
 	padding: 5px;
+}
+
+#columnFilterExpand > div {
+	font-size: 14px;
 }
 
 #columns label {
@@ -158,7 +172,21 @@ button[disabled] {
 	background-color: #666;
 	border-radius: 5px;
 	padding: 2px;
-	margin: 2px;
+	margin: 1px;
+}
+
+table {
+	border-collapse: separate;
+	border-spacing: 2px;
+	font-size: 14px;
+}
+
+th {
+	background-color: #222;
+}
+
+td {
+	padding: 3px;
 }
 
 tr:nth-child(even) {

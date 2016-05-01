@@ -4,8 +4,29 @@ import { TableBaseController } from "table-base.js";
 export class TableController extends TableBaseController {
     constructor(base, resources, linkStore, linkResolver) {
 	super(base, resources, linkStore, linkResolver);
+	this.page = 1;
+
+	this.setupEventHandlers();
     }
 
+
+    setupEventHandlers() {
+	$("#btnPrev").on("click", (e => {
+	    this.load(--this.page);
+	}).bind(this));
+
+	
+	$("#btnGet").on("click", (e => {
+	    this.load(this.page)
+	}).bind(this));
+
+	
+	$("#btnNext").on("click", (e => {
+	    this.load(++this.page)
+	}).bind(this));
+    }
+
+    
     /**
      * Loads and renders a page of entities
      *
@@ -26,13 +47,13 @@ export class TableController extends TableBaseController {
 		$("#table").remove();
 		$("#table-template").clone().first().attr("id", "table").show().appendTo($("#rest"));
 		
-		response.page = $VueDemo.default.page;
+		response.page = this.page;
 		
 		this.viewmodel = new Vue({
 		    el: '#table',
 		    data: {
-			pageStart: ($VueDemo.default.page - 1) * 10 + 1,
-			pageEnd: ($VueDemo.default.page - 1) * 10 + response.results.length,
+			pageStart: (this.page - 1) * 10 + 1,
+			pageEnd: (this.page - 1) * 10 + response.results.length,
 			count: response.count,
 			resource: resource,
 			results: response.results,
@@ -40,7 +61,8 @@ export class TableController extends TableBaseController {
 		    },
 		    methods: {
 			clickLink: this.clickLink,
-			isArray: this.isArray
+			isArray: this.isArray,
+			showOnMobile: this.showOnMobile
 		    }
 		});
 		
@@ -51,5 +73,9 @@ export class TableController extends TableBaseController {
 	    }.bind(this),
 	    error: function(err) { }
 	});
+    }
+
+    showOnMobile(name) {
+	return name == "url";
     }
 }

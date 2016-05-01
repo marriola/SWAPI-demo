@@ -1,3 +1,8 @@
+String.prototype.contains = String.prototype.contains || function(needle) {
+    return this.indexOf(needle) != -1;
+}
+
+
 /**
  * Converts words separated by underscores to title case
  */

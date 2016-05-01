@@ -6,18 +6,13 @@ import { TablePopupController } from "table-popup.js"
 import { LinkResolver } from "link-resolver.js"
 import { clone, titleCase, mapName } from "utils.js"
 
-String.prototype.contains = String.prototype.contains || function(needle) {
-    return this.indexOf(needle) != -1;
-}
 
 //Vue.config.debug = true;
 class VueDemo {
     constructor() {
 	this.RESOLVE_LINKS = true;
 	this.SWAPI_BASE = "http://swapi.co/api/";
-	this.page = 1;
 
-	this.waiting = {};
 	this.linkStore = new LinkStore();
 	this.resources = new ResourcesController(this.SWAPI_BASE);
 	this.columns = new ColumnsController(this.SWAPI_BASE);
@@ -33,22 +28,7 @@ class VueDemo {
     }
 
 
-    setupEventHandlers() {
-	$("#btnPrev").on("click", e => {
-	    this.table.load(--this.page);
-	});
-
-	
-	$("#btnGet").on("click", e => {
-	    this.table.load(this.page)
-	});
-
-	
-	$("#btnNext").on("click", e => {
-	    this.table.load(++this.page)
-	});
-
-	
+    setupEventHandlers() {	
 	$("#columnFilterExpand").on("click", e => {
 	    let open = $("#expandIndicator").hasClass("open");
 	    
@@ -59,21 +39,10 @@ class VueDemo {
 		$("#expandIndicator").removeClass("closed").addClass("open");
 		$("#columns").toggle(500);
 	    }
-	});
-
-	
-	$("#overlay, #btnClose").on("click", this.hideOverlay);
+	});	
     }
 
     
-    showOverlay() {
-	$("#table-popup, #overlay").fadeIn();
-    }
-
-
-    hideOverlay() {
-	$("#table-popup, #overlay").fadeOut();
-    }
 }
 
 export default new VueDemo()

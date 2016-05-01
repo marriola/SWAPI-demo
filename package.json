@@ -1,11 +1,11 @@
 {
-  "name": "your-app",
-  "description": "Description",
-  "author": "Your Name",
+  "name": "SWAPI-demo",
+  "description": "Tells you Star Wars stuff",
+  "author": "Matt Arriola",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/marriola/SWAPI-demo/"
   },
   "scripts": {
     "start": "brunch watch --server",

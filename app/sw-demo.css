@@ -64,6 +64,10 @@ button, select {
 	font-size: 12px;
 }
 
+button:focus {
+    outline: 0;
+}
+
 button:active {
 	color: gray;
 	background: black;

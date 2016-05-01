@@ -43,10 +43,7 @@ export class TablePopupController extends TableBaseController {
 			result,
 			linkStore: this.linkStore.store
 		    },
-		    methods: {
-			clickLink: this.clickLink,
-			isArray: this.isArray			
-		    }
+		    methods: this.baseMethods
 		});
 
 		this.linkResolver.resolve("#table-popup");

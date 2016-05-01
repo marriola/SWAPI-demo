@@ -6,6 +6,11 @@ export class TableBaseController extends Controller {
 	this.resources = resources;
 	this.linkStore = linkStore;
 	this.linkResolver = linkResolver;
+	this.baseMethods = {
+	    clickLink: this.clickLink,
+	    isArray: this.isArray,
+	    sanitize: this.sanitize
+	};
     }
 
     /**
@@ -25,5 +30,9 @@ export class TableBaseController extends Controller {
     
     isArray(x) {
 	return Array.isArray(x);
+    }
+
+    sanitize(x) {
+	return x || "[none]";
     }
 }

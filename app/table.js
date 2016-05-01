@@ -59,11 +59,9 @@ export class TableController extends TableBaseController {
 			results: response.results,
 			linkStore: this.linkStore.store
 		    },
-		    methods: {
-			clickLink: this.clickLink,
-			isArray: this.isArray,
+		    methods: $.extend({}, this.baseMethods, {
 			showOnMobile: this.showOnMobile
-		    }
+		    })
 		});
 		
 		this.linkResolver.resolve("#table");

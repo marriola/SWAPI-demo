@@ -3,11 +3,10 @@ import { Controller } from "controller.js";
 
 export class ResourcesController extends Controller {
     constructor(base) {
-	super();
+	super(base);
 	this.data = {
 	    selected: "0"
 	};
-	this.SWAPI_BASE = base;
     }
 
     /**

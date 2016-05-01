@@ -1,5 +1,6 @@
 import { LinkStore } from "link-store.js"
 import { ResourcesController } from "resources.js"
+import { ColumnsController } from "columns.js"
 import { clone, titleCase, mapName } from "utils.js"
 
 String.prototype.contains = String.prototype.contains || function(needle) {
@@ -33,7 +34,6 @@ class VueDemo {
 	};
 
 	this.ViewModels = {
-	    resources: null,
 	    columns: null,
 	    table: null,
 	};
@@ -41,21 +41,7 @@ class VueDemo {
 	this.waiting = {};
 	this.linkStore = new LinkStore();
 	this.resources = new ResourcesController(this.SWAPI_BASE);
-	
-	this.columnViewMethods = {
-	    showColumns: function(resource) {
-		$(".columnName").removeClass("selected");
-		$(`.columnName[data-index='${resource.index}']`).addClass("selected");
-		
-		if ($(".columnPage:visible").length == 0) {
-		    $(`.columnPage[data-index='${resource.index}']`).slideDown(250);
-		} else {
-		    $(".columnPage:visible").fadeOut(250, function() {
-			$(`.columnPage[data-index='${resource.index}']`).fadeIn(250);
-		    });
-		}				
-	    }.bind(this)
-	};
+	this.columns = new ColumnsController(this.SWAPI_BASE);
 	
 	this.entityViewMethods = {
 	    clickLink: this.COMMON_METHODS.clickLink,
@@ -70,9 +56,7 @@ class VueDemo {
 	    isArray: this.COMMON_METHODS.isArray
 	};
 	
-	this.viewModel = null;
 	this.page = 1;
-	this.retrievedResources = 0;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Event handlers
@@ -110,7 +94,7 @@ class VueDemo {
 	$("#overlay, #btnClose").on("click", this.hideOverlay);
 
 	this.resources.load((() => {
-	    this.getColumns();
+	    this.columns.load(this.resources.data.store);
 	}).bind(this));
     }
 
@@ -135,40 +119,6 @@ class VueDemo {
     // Data functions
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Retrieves the list of columns for each resource and generates the column filter
-     */
-    getColumns() {
-	for (let resource of this.resources.data.store) {
-	    $.ajax({
-		type: "GET",
-		url: this.SWAPI_BASE + resource.name + "/schema",
-		error: function () { console.error("error retrieving schema for '" + resource.name+ + "'"); },
-		success: function (resource) { return function (response) {
-		    resource.columns = Object.keys(response.properties).map(((x, i) => {
-			let out = mapName(x);
-			out.show = true;
-			out.hasUrl = response.properties[x].description.toLowerCase().contains("url");
-			return out;
-		    }).bind(this));
-
-		    if (++this.retrievedResources == this.resources.data.store.length) {
-			this.ViewModels.columns = new Vue({
-			    el: "#columns",
-			    data: { resources: this.resources },
-			    methods: this.columnViewMethods
-			});
-			
-			$("#please-wait").fadeOut(250, function() {
-			    $("#controls").slideDown(250);
-			});
-			
-			$("#btnGet").prop("disabled", false);
-		    }
-		}.bind(this) }.bind(this)(resource)
-	    });
-	}
-    }
 
 
     /**
@@ -227,7 +177,7 @@ class VueDemo {
 	    resourceName = match[1];
 	}
 	
-	let resource = this.resources.find(x => x.name == resourceName);
+	let resource = this.resources.data.store.find(x => x.name == resourceName);
 	if (!resource)
 	    return;
 	

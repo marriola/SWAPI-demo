@@ -16,13 +16,13 @@ export class ResourcesController extends Controller {
      */
     load(after) {
 	this.ajax.call("")
-	    .then((response => {
-		this.model.store = Object.keys(response).map(((x, i) => {
+	    .then(response => {
+		this.model.store = Object.keys(response).map((x, i) => {
 		    let out = mapName(x, i);
 		    out.columns = [];
 		    out.selected = false;
 		    return out;
-		}).bind(this));
+		});
 		
 		this.viewModel = new Vue({
 		    el: "#resources",
@@ -34,7 +34,7 @@ export class ResourcesController extends Controller {
 		
 		if (after)
 		    after();
-	    }).bind(this));
+	    });
     }
 
     /**

@@ -21,9 +21,9 @@ class VueDemo {
 	this.table = new TableController(this.SWAPI_BASE, this.resources, this.linkStore, this.linkResolver);
 	this.tablePopup = new TablePopupController(this.SWAPI_BASE, this.resources, this.linkStore, this.linkResolver);
 	
-	this.resources.load((() => {
+	this.resources.load(() => {
 	    this.columns.load(this.resources.model.store);
-	}).bind(this));
+	});
     }    
 }
 

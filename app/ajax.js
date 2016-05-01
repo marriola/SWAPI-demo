@@ -10,12 +10,12 @@ export class Ajax {
     call(url, raw=false, type="GET", errorCallback=null) {
 	this.lastUrl = this.base + url;
 	
-	return new Promise(((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 	    $.ajax({
 		type,
 		url: raw ? url : this.base + url,
 		success: resolve,
-		error: ((jqXHR, status, error) => {
+		error: (jqXHR, status, error) => {
 		    let errorCallbacks = [
 			errorCallback,
 			this.errorCallback,
@@ -29,13 +29,13 @@ export class Ajax {
 		    }
 
 		    reject(jqXHR, status, error);
-		}).bind(this)
+		}
 	    });
-	}).bind(this));
+	});
     }
 
     ajaxError(jqXHR, status, error) {
-	alert(`Ajax error retrieving ${this.lastUrl}. See window.jqXHR for more detail`);
+	alert(`Ajax error retrieving ${this.lastUrl}. See window._ajaxError for more detail`);
 	
 	window._ajaxError = { jqXHR, status, error };
     }

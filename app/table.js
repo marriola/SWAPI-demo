@@ -13,19 +13,19 @@ export class TableController extends TableBaseController {
 
 
     setupEventHandlers() {
-	$("#btnPrev").on("click", (e => {
+	$("#btnPrev").on("click", e => {
 	    this.load(--this.page);
-	}).bind(this));
+	});
 
 	
-	$("#btnGet").on("click", (e => {
+	$("#btnGet").on("click", e => {
 	    this.load(this.page)
-	}).bind(this));
+	});
 
 	
-	$("#btnNext").on("click", (e => {
+	$("#btnNext").on("click", e => {
 	    this.load(++this.page)
-	}).bind(this));
+	});
     }
 
     
@@ -40,7 +40,7 @@ export class TableController extends TableBaseController {
 	$("#spinner").show();
 
 	this.ajax.call(`${resource.name}/?page=${page}`)
-	    .then((response => {
+	    .then(response => {
 		$("#btnPrev").prop("disabled", !response.previous);
 		$("#btnNext").prop("disabled", !response.next);
 		
@@ -70,7 +70,7 @@ export class TableController extends TableBaseController {
 		$("#spinner").hide();
 		$("html, body").animate({ scrollTop: 0 });
 		$("#table").show();
-	    }).bind(this));
+	    });
     }
 
     showOnMobile(name) {

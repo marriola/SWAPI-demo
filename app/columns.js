@@ -33,13 +33,13 @@ export class ColumnsController extends Controller {
     load(resources, after) {
 	for (let resource of resources) {
 	    this.ajax.call(`${resource.name}/schema`)
-		.then((resource => { return (response => {
-		    resource.columns = Object.keys(response.properties).map(((x, i) => {
+		.then((resource => { return response => {
+		    resource.columns = Object.keys(response.properties).map((x, i) => {
 			let out = mapName(x);
 			out.show = true;
 			out.hasUrl = response.properties[x].description.toLowerCase().contains("url");
 			return out;
-		    }).bind(this));
+		    });
 
 		    if (++this.retrievedResources == resources.length) {
 			this.viewmodel = new Vue({
@@ -56,7 +56,7 @@ export class ColumnsController extends Controller {
 			
 			$("#btnGet").prop("disabled", false);
 		    }
-		}).bind(this) }).bind(this)(resource));
+		} })(resource));
 	}
 
 	if (after)

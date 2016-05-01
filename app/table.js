@@ -2,8 +2,8 @@ import { mapName } from "utils.js";
 import { TableBaseController } from "table-base.js";
 
 export class TableController extends TableBaseController {
-    constructor(base, linkStore, linkResolver) {
-	super(base, linkStore, linkResolver);
+    constructor(base, resources, linkStore, linkResolver) {
+	super(base, resources, linkStore, linkResolver);
     }
 
     /**
@@ -12,7 +12,7 @@ export class TableController extends TableBaseController {
      * @param page {number}		The page number to load
      */
     load(page="", after) {
-	let resource = $VueDemo.default.resources.getSelected();
+	let resource = this.resources.getSelected();
 	let url = this.SWAPI_BASE + resource.name + "/?page=" + page;
 	$("#spinner").show();
 	

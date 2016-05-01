@@ -1,8 +1,9 @@
 import { Controller } from "controller.js"
 
 export class TableBaseController extends Controller {
-    constructor(base, linkStore, linkResolver) {
+    constructor(base, resources, linkStore, linkResolver) {
 	super(base);
+	this.resources = resources;
 	this.linkStore = linkStore;
 	this.linkResolver = linkResolver;
     }
@@ -17,7 +18,7 @@ export class TableBaseController extends Controller {
     clickLink (column, url, event) {
 	event.preventDefault();
 	event.target.classList.add("waiting");
-	$VueDemo.default.loadEntityPopup(url, () => {
+	$VueDemo.default.tablePopup.load(url, () => {
 	    event.target.classList.remove("waiting");
 	});
     }

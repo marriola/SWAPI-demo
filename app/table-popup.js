@@ -26,7 +26,7 @@ export class TablePopupController extends TableBaseController {
 	    resourceName = match[1];
 	}
 	
-	let resource = this.resources.data.store.find(x => x.name == resourceName);
+	let resource = this.resources.model.store.find(x => x.name == resourceName);
 	if (!resource)
 	    return;
 	

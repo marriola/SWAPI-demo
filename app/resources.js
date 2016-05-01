@@ -4,7 +4,7 @@ import { Controller } from "controller.js";
 export class ResourcesController extends Controller {
     constructor(base) {
 	super(base);
-	this.data = {
+	this.model = {
 	    selected: "0"
 	};
     }
@@ -17,7 +17,7 @@ export class ResourcesController extends Controller {
 	    type: "GET",
 	    url: this.SWAPI_BASE,
 	    success: function(response) {
-		this.data.store = Object.keys(response).map(((x, i) => {
+		this.model.store = Object.keys(response).map(((x, i) => {
 		    let out = mapName(x, i);
 		    out.columns = [];
 		    out.selected = false;
@@ -26,7 +26,7 @@ export class ResourcesController extends Controller {
 		
 		this.viewModel = new Vue({
 		    el: "#resources",
-		    data: this.data,
+		    data: this.model,
 		    methods: {
 			selectResource: this.selectResource
 		    }
@@ -43,7 +43,7 @@ export class ResourcesController extends Controller {
      * Returns the resource currently selected by the select#resources element
      */
     getSelected() {
-	return this.data.store[this.data.selected];
+	return this.model.store[this.model.selected];
     }
     
     selectResource (i) {

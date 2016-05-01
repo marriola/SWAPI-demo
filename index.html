@@ -83,7 +83,7 @@
 </div>
 
 <div id="table-popup-template" style="display: none">
-	<a id="btnClose" class="link" href="javascript:$demo.hideOverlay()">[x]</a>
+	<a id="btnClose" class="link" href="javascript:vueDemo.hideOverlay()">[x]</a>
 	<table>
 		<tbody>
 			<tr v-for="column in columns">
@@ -111,7 +111,8 @@
 <script src="https://cdn.jsdelivr.net/vue/1.0.21/vue.min.js"></script>
 <script src="sw-demo.es5.min.js"></script>
 
-<style type="text/css">
-</style>
+<script type="text/javascript">
+	var vueDemo = new VueDemo();
+</script>
 </body>
 </html>

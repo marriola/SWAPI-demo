@@ -4,10 +4,10 @@ import { Controller } from "controller.js";
 export class ResourcesController extends Controller {
     constructor(base) {
 	super();
-	this.SWAPI_BASE = base;
 	this.data = {
 	    selected: "0"
 	};
+	this.SWAPI_BASE = base;
     }
 
     /**

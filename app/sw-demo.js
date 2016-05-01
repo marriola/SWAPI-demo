@@ -1,8 +1,10 @@
+import { LinkStore } from "link-store.js"
+import { ResourcesController } from "resources.js"
+import { clone, titleCase, mapName } from "utils.js"
+
 String.prototype.contains = String.prototype.contains || function(needle) {
     return this.indexOf(needle) != -1;
 }
-
-console.log("hi!");
 
 //Vue.config.debug = true;
 class VueDemo {
@@ -36,55 +38,41 @@ class VueDemo {
 	    table: null,
 	};
 	
-	this.VueDemo = {
-	    waiting: {},
-	    linkStore: this.getLinkStore(),
-	    
-	    resourcesView: {
-		selected: "0",	
-	    },
-	    
-	    resourcesViewMethods: {	
-		selectResource: function(i) {
-		    $("#table").remove();
-		    $("#btnPrev, #btnNext").prop("disabled", true);
-		    this.VueDemo.page = 1;
-		}.bind(this)
-	    },
-	    
-	    columnViewMethods: {
-		showColumns: function(resource) {
-		    $(".columnName").removeClass("selected");
-		    $(`.columnName[data-index='${resource.index}']`).addClass("selected");
-		    
-		    if ($(".columnPage:visible").length == 0) {
-			$(`.columnPage[data-index='${resource.index}']`).slideDown(250);
-		    } else {
-			$(".columnPage:visible").fadeOut(250, function() {
-			    $(`.columnPage[data-index='${resource.index}']`).fadeIn(250);
-			});
-		    }				
-		}.bind(this)
-	    },
-	    
-	    entityViewMethods: {
-		clickLink: this.COMMON_METHODS.clickLink,
-		isArray: this.COMMON_METHODS.isArray,
-		showOnMobile: function (name) {
-		    return name == "url";
-		}.bind(this)
-	    },
-	    
-	    entityPopupViewMethods: {
-		clickLink: this.COMMON_METHODS.clickLink,
-		isArray: this.COMMON_METHODS.isArray
-	    },
-	    
-	    viewModel: null,
-	    page: 1,
-	    resources: [],
-	    retrievedResources: 0
+	this.waiting = {};
+	this.linkStore = new LinkStore();
+	this.resources = new ResourcesController(this.SWAPI_BASE);
+	
+	this.columnViewMethods = {
+	    showColumns: function(resource) {
+		$(".columnName").removeClass("selected");
+		$(`.columnName[data-index='${resource.index}']`).addClass("selected");
+		
+		if ($(".columnPage:visible").length == 0) {
+		    $(`.columnPage[data-index='${resource.index}']`).slideDown(250);
+		} else {
+		    $(".columnPage:visible").fadeOut(250, function() {
+			$(`.columnPage[data-index='${resource.index}']`).fadeIn(250);
+		    });
+		}				
+	    }.bind(this)
 	};
+	
+	this.entityViewMethods = {
+	    clickLink: this.COMMON_METHODS.clickLink,
+	    isArray: this.COMMON_METHODS.isArray,
+	    showOnMobile: function (name) {
+		return name == "url";
+	    }.bind(this)
+	};
+	
+	this.entityPopupViewMethods = {
+	    clickLink: this.COMMON_METHODS.clickLink,
+	    isArray: this.COMMON_METHODS.isArray
+	};
+	
+	this.viewModel = null;
+	this.page = 1;
+	this.retrievedResources = 0;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Event handlers
@@ -92,17 +80,17 @@ class VueDemo {
 
 	
 	$("#btnPrev").on("click", e => {
-	    this.loadEntities(--this.VueDemo.page);
+	    this.loadEntities(--this.page);
 	});
 
 	
 	$("#btnGet").on("click", e => {
-	    this.loadEntities(this.VueDemo.page)
+	    this.loadEntities(this.page)
 	});
 
 	
 	$("#btnNext").on("click", e => {
-	    this.loadEntities(++this.VueDemo.page)
+	    this.loadEntities(++this.page)
 	});
 
 	
@@ -121,7 +109,9 @@ class VueDemo {
 	
 	$("#overlay, #btnClose").on("click", this.hideOverlay);
 
-	this.getResources();
+	this.resources.load((() => {
+	    this.getColumns();
+	}).bind(this));
     }
 
 
@@ -130,31 +120,6 @@ class VueDemo {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     
-    getLinkStore() {
-	let retrieved;
-	
-	if (localStorage) {
-	    retrieved = localStorage.linkStore;
-	} else {
-	    m = document.cookie.match(/linkStore=(.*?);/);
-	    retrieved = m[1];
-	}
-
-	return retrieved && JSON.parse(retrieved) || {};
-    }
-
-
-    saveLinkStore() {
-	let linkStoreJson = JSON.stringify(this.VueDemo.linkStore);
-	
-	if (localStorage) {
-	    localStorage.linkStore = linkStoreJson;
-	} else {
-	    document.cookie = `linkStore='${linkStoreJson}'; expires=Tue, 19 Jan 2038 03:14:07 UTC;`;
-	}
-    }
-    
-
     showOverlay() {
 	$("#table-popup, #overlay").fadeIn();
     }
@@ -164,112 +129,34 @@ class VueDemo {
 	$("#table-popup, #overlay").fadeOut();
     }
 
-    /**
-     * Returns a clone of a template element. If the element's ID ends in "-template", that portion is removed from the cloned element.
-     *
-     * @param $elt {JQuery}			The element to clone
-     * @param replace {Boolean}		True if the last cloned element with this ID should be removed
-     */
-    clone($elt, replace=false) {
-	let id = $elt.attr("id").replace("-template", "");
-	if (replace)
-	    $("#" + id).remove();
-	return $elt.clone().first().attr("id", id);
-    }
 
     
-    /**
-     * Returns the resource currently selected by the select#resources element
-     */
-    getSelectedResource() {
-	return this.VueDemo.resources[this.VueDemo.resourcesView.selected];
-    }
-
-
-    /**
-     * Converts words separated by underscores to title case
-     */
-    titleCase(str) {
-	return str.split("_")
-	    .map((x, i) => x[0].toUpperCase() + x.substr(1))
-	    .join(" ");
-    }
-
-
-    /**
-     * Maps a name onto an object containing the original name, the title-cased name, and its index
-     *
-     * @param name {String}		The name of the item
-     * @param index {Number}	The index of the item in its list (of resources or columns)
-     *
-     * @returns {Object}
-     */
-    mapName(name, index) {
-	return {
-	    name: name,
-	    displayName: this.titleCase(name),
-	    index
-	};
-    }
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // Data functions
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    
-    /**
-     * Retrieves the list of available resources from the API, then gets columns for each when done
-     */
-    getResources() {
-	$.ajax({
-	    type: "GET",
-	    url: this.SWAPI_BASE,
-	    success: function(response) {
-		this.VueDemo.resources = Object.keys(response).map(((x, i) => {
-		    let out = this.mapName(x, i);
-		    out.columns = [];
-		    out.selected = false;
-		    return out;
-		}).bind(this));
-		
-		this.VueDemo.resourcesView.resources = this.VueDemo.resources;
-		
-		this.ViewModels.resources = new Vue({
-		    el: "#resources",
-		    data: this.VueDemo.resourcesView,
-		    methods: this.VueDemo.resourcesViewMethods
-		});
-		
-		this.getColumns();
-	    }.bind(this),
-	    error: function() { alert("couldn't get resources"); }
-	});
-    }
-
 
     /**
      * Retrieves the list of columns for each resource and generates the column filter
      */
     getColumns() {
-	for (let resource of this.VueDemo.resources) {
+	for (let resource of this.resources.data.store) {
 	    $.ajax({
 		type: "GET",
 		url: this.SWAPI_BASE + resource.name + "/schema",
-		error: function () { alert("error retrieving schema for '" + resource.name + "'"); },
+		error: function () { console.error("error retrieving schema for '" + resource.name+ + "'"); },
 		success: function (resource) { return function (response) {
 		    resource.columns = Object.keys(response.properties).map(((x, i) => {
-			let out = this.mapName(x);
+			let out = mapName(x);
 			out.show = true;
 			out.hasUrl = response.properties[x].description.toLowerCase().contains("url");
 			return out;
 		    }).bind(this));
 
-		    if (++this.VueDemo.retrievedResources == this.VueDemo.resources.length) {
+		    if (++this.retrievedResources == this.resources.data.store.length) {
 			this.ViewModels.columns = new Vue({
 			    el: "#columns",
-			    data: { resources: this.VueDemo.resources },
-			    methods: this.VueDemo.columnViewMethods
+			    data: { resources: this.resources },
+			    methods: this.columnViewMethods
 			});
 			
 			$("#please-wait").fadeOut(250, function() {
@@ -290,7 +177,7 @@ class VueDemo {
      * @param page {number}		The page number to load
      */
     loadEntities(page="") {
-	let resource = this.getSelectedResource();
+	let resource = this.resources.getSelected();
 	let url = this.SWAPI_BASE + resource.name + "/?page=" + page;
 	$("#spinner").show();
 	
@@ -304,19 +191,19 @@ class VueDemo {
 		$("#table").remove();
 		$("#table-template").clone().first().attr("id", "table").show().appendTo($("#rest"));
 		
-		response.page = this.VueDemo.page;
+		response.page = this.page;
 		
 		this.ViewModels.table = new Vue({
 		    el: '#table',
 		    data: {
-			pageStart: (this.VueDemo.page - 1) * 10 + 1,
-			pageEnd: (this.VueDemo.page - 1) * 10 + response.results.length,
+			pageStart: (this.page - 1) * 10 + 1,
+			pageEnd: (this.page - 1) * 10 + response.results.length,
 			count: response.count,
 			resource: resource,
 			results: response.results,
-			linkStore: this.VueDemo.linkStore
+			linkStore: this.linkStore.store
 		    },
-		    methods: this.VueDemo.entityViewMethods
+		    methods: this.entityViewMethods
 		});
 		
 		this.resolveLinks("#table");
@@ -340,7 +227,7 @@ class VueDemo {
 	    resourceName = match[1];
 	}
 	
-	let resource = this.VueDemo.resources.find(x => x.name == resourceName);
+	let resource = this.resources.find(x => x.name == resourceName);
 	if (!resource)
 	    return;
 	
@@ -350,16 +237,16 @@ class VueDemo {
 	    type: "GET",
 	    url: url,
 	    success: function(result) {
-		$("#rest").append(this.clone($("#table-popup-template"), true));
+		$("#rest").append(clone($("#table-popup-template"), true));
 		
 		new Vue({
 		    el: "#table-popup",
 		    data: {
 			columns,
 			result,
-			linkStore: this.VueDemo.linkStore
+			linkStore: this.linkStore.store
 		    },
-		    methods: this.VueDemo.entityPopupViewMethods
+		    methods: this.entityPopupViewMethods
 		});
 
 		this.resolveLinks("#table-popup");
@@ -388,18 +275,18 @@ class VueDemo {
 	$links.each(((idx, elt) => {
 	    let url = elt.getAttribute("href");
 	    
-	    if (this.VueDemo.waiting[url]) {
+	    if (this.waiting[url]) {
 		--count;
 		return;
-	    } else if (this.VueDemo.linkStore[url]) {
+	    } else if (this.linkStore.get(url)) {
 		$(`[href='${url}']`)
-		    .text(this.VueDemo.linkStore[url])
+		    .text(this.linkStore.get(url))
 		    .removeClass("not-set");
 		--count;
 		return;
 	    }
 	    
-	    this.VueDemo.waiting[url] = true;
+	    this.waiting[url] = true;
 	    
 	    $.ajax({
 		type: "GET",
@@ -409,10 +296,10 @@ class VueDemo {
 		    $(`[href='${url}']`)
 			.text(name)
 			.removeClass("not-set");
-		    this.VueDemo.linkStore[url] = name;
+		    this.linkStore.add(url, name);
 		    
 		    if (--count == 0) {
-			this.saveLinkStore();
+			this.linkStore.save();
 			console.log("Done.");
 		    }
 		}.bind(this)

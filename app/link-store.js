@@ -25,7 +25,7 @@ export class LinkStore {
     }
 
     save() {
-	let linkStoreJson = JSON.stringify(this.VueDemo.linkStore);
+	let linkStoreJson = JSON.stringify(this.store);
 	
 	if (localStorage) {
 	    localStorage.linkStore = linkStoreJson;

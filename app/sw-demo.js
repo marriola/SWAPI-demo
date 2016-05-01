@@ -2,6 +2,8 @@ String.prototype.contains = String.prototype.contains || function(needle) {
     return this.indexOf(needle) != -1;
 }
 
+console.log("hi!");
+
 //Vue.config.debug = true;
 class VueDemo {
     constructor() {
@@ -418,3 +420,5 @@ class VueDemo {
 	}).bind(this));
     }
 }
+
+export default new VueDemo()

@@ -64,7 +64,7 @@ button, select {
 	font-size: 12px;
 }
 
-button:focus {
+button:focus, select:focus {
     outline: 0;
 }
 

@@ -1,7 +1,7 @@
 export class Ajax {
     constructor(base, errorCallback=null) {
 	this.lastUrl = null;
-	if (!base.endsWith("/"))
+	if (base !== null && !base.endsWith("/"))
 	    base += "/";
 	this.base = base;
 	this.errorCallback = errorCallback || this.ajaxError;
@@ -13,7 +13,7 @@ export class Ajax {
 	return new Promise((resolve, reject) => {
 	    $.ajax({
 		type,
-		url: raw ? url : this.base + url,
+		url: raw || !this.base ? url : this.base + url,
 		success: resolve,
 		error: (jqXHR, status, error) => {
 		    let errorCallbacks = [

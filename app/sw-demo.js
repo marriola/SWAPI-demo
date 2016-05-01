@@ -1,9 +1,9 @@
 import { LinkStore } from "link-store.js"
 import { LinkResolver } from "link-resolver.js"
-import { ResourcesController } from "resources.js"
-import { ColumnsController } from "columns.js"
-import { TableController } from "table.js"
-import { TablePopupController } from "table-popup.js"
+import { ResourcesController } from "controllers/resources.js"
+import { ColumnsController } from "controllers/columns.js"
+import { TableController } from "controllers/table.js"
+import { TablePopupController } from "controllers/table-popup.js"
 
 
 //Vue.config.debug = true;

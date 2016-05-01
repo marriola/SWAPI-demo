@@ -1,4 +1,4 @@
-import { Controller } from "controller.js";
+import { Controller } from "controllers/controller.js";
 import { mapName } from "utils.js";
 import { Ajax } from "ajax.js";
 

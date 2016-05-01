@@ -1,4 +1,4 @@
-import { Controller } from "controller.js";
+import { Controller } from "controllers/controller.js";
 
 export class TableBaseController extends Controller {
     constructor(base, resources, linkStore, linkResolver) {

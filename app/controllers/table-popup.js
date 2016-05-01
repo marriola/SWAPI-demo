@@ -1,4 +1,4 @@
-import { TableBaseController } from "table-base.js"
+import { TableBaseController } from "controllers/table-base.js"
 import { clone } from "utils.js"
 
 export class TablePopupController extends TableBaseController {

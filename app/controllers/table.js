@@ -1,4 +1,4 @@
-import { TableBaseController } from "table-base.js";
+import { TableBaseController } from "controllers/table-base.js";
 import { mapName } from "utils.js";
 import { Ajax } from "ajax.js";
 

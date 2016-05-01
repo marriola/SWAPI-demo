@@ -10,7 +10,7 @@
 
 <div id="controls" style="display: none;">
 	<select id="resources" v-model="selected" @change="selectResource">
-		<option v-for="resource in resources" value="{{ $index }}">{{ resource.displayName }}</option>
+		<option v-for="resource in store" value="{{ $index }}">{{ resource.displayName }}</option>
 	</select>
 	<button id="btnGet" disabled>Get</button>
 	<br/>
@@ -112,7 +112,7 @@
 <script src="app.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-	require("sw-demo.js");
+	var $VueDemo = require("sw-demo.js");
 </script>
 </body>
 </html>

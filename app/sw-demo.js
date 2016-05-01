@@ -273,7 +273,7 @@ class VueDemo {
 			});
 			
 			$("#please-wait").fadeOut(250, function() {
-			    $("#controls").fadeIn(250);
+			    $("#controls").slideDown(250);
 			});
 			
 			$("#btnGet").prop("disabled", false);

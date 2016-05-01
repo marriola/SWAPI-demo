@@ -36,7 +36,7 @@ class VueDemo {
 	
 	this.VueDemo = {
 	    waiting: {},
-	    linkStore: (localStorage.linkStore && JSON.parse(localStorage.linkStore)) || {},
+	    linkStore: this.getLinkStore(),
 	    
 	    resourcesView: {
 		selected: "0",	
@@ -128,6 +128,31 @@ class VueDemo {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     
+    getLinkStore() {
+	let retrieved;
+	
+	if (localStorage) {
+	    retrieved = localStorage.linkStore && localStorage.linkStore;
+	} else {
+	    m = document.cookie.match(/linkStore=(.*?);/);
+	    retrieved = m[1];
+	}
+
+	return retrieved && JSON.parse(retrieved) || {};
+    }
+
+
+    saveLinkStore() {
+	let linkStoreJson = JSON.stringify(this.VueDemo.linkStore);
+	
+	if (localStorage) {
+	    localStorage.linkStore = linkStoreJson;
+	} else {
+	    document.cookie = `linkStore='${linkStoreJson}'; expires=Tue, 19 Jan 2038 03:14:07 UTC;`;
+	}
+    }
+    
+
     showOverlay() {
 	$("#table-popup, #overlay").fadeIn();
     }
@@ -385,7 +410,7 @@ class VueDemo {
 		    this.VueDemo.linkStore[url] = name;
 		    
 		    if (--count == 0) {
-			localStorage.linkStore = JSON.stringify(this.VueDemo.linkStore);
+			this.saveLinkStore();
 			console.log("Done.");
 		    }
 		}.bind(this)

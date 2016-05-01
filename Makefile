@@ -9,10 +9,10 @@ MINIFIER_OPTIONS =
 all: sw-demo.es5.min.js
 
 clean:
-	rm sw-demo.es5.js sw-demo.es5.min.js
+	rm src/sw-demo.es5.js src/sw-demo.es5.min.js
 
-sw-demo.es5.js: sw-demo.js
+src/sw-demo.es5.js: src/sw-demo.js
 	$(BABEL) $(BABEL_OPTIONS) $^ -o $@
 
-sw-demo.es5.min.js: sw-demo.es5.js
-	$(MINIFIER) $(MINIFIER_OPTIONS) $^ -o $@
+sw-demo.es5.min.js: src/sw-demo.es5.js
+	$(MINIFIER) $(MINIFIER_OPTIONS) $^ -o src/$@

@@ -5,8 +5,26 @@ export class ColumnsController extends Controller {
     constructor(base) {
 	super(base);
 	this.retrievedResources = 0;
+
+	this.setupEventHandlers();
     }
 
+    
+    setupEventHandlers() {	
+	$("#columnFilterExpand").on("click", e => {
+	    let open = $("#expandIndicator").hasClass("open");
+	    
+	    if (open) {
+		$("#expandIndicator").removeClass("open").addClass("closed");
+		$("#columns").toggle(500);
+	    } else {
+		$("#expandIndicator").removeClass("closed").addClass("open");
+		$("#columns").toggle(500);
+	    }
+	});	
+    }
+
+    
     /**
      * Retrieves the list of columns for each resource and generates the column filter
      */

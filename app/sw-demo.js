@@ -20,29 +20,10 @@ class VueDemo {
 	this.table = new TableController(this.SWAPI_BASE, this.resources, this.linkStore, this.linkResolver);
 	this.tablePopup = new TablePopupController(this.SWAPI_BASE, this.resources, this.linkStore, this.linkResolver);
 	
-	this.setupEventHandlers();	
-
 	this.resources.load((() => {
 	    this.columns.load(this.resources.data.store);
 	}).bind(this));
-    }
-
-
-    setupEventHandlers() {	
-	$("#columnFilterExpand").on("click", e => {
-	    let open = $("#expandIndicator").hasClass("open");
-	    
-	    if (open) {
-		$("#expandIndicator").removeClass("open").addClass("closed");
-		$("#columns").toggle(500);
-	    } else {
-		$("#expandIndicator").removeClass("closed").addClass("open");
-		$("#columns").toggle(500);
-	    }
-	});	
-    }
-
-    
+    }    
 }
 
 export default new VueDemo()

@@ -1,9 +1,11 @@
-import { mapName } from "utils.js";
 import { Controller } from "controller.js";
+import { mapName } from "utils.js";
+import { Ajax } from "ajax.js";
 
 export class ResourcesController extends Controller {
     constructor(base) {
 	super(base);
+	
 	this.model = {
 	    selected: "0"
 	};
@@ -13,10 +15,8 @@ export class ResourcesController extends Controller {
      * Retrieves the list of available resources from the API, then gets columns for each when done
      */
     load(after) {
-	$.ajax({
-	    type: "GET",
-	    url: this.SWAPI_BASE,
-	    success: function(response) {
+	this.ajax.call("")
+	    .then((response => {
 		this.model.store = Object.keys(response).map(((x, i) => {
 		    let out = mapName(x, i);
 		    out.columns = [];
@@ -34,9 +34,7 @@ export class ResourcesController extends Controller {
 		
 		if (after)
 		    after();
-	    }.bind(this),
-	    error: function() { alert("couldn't get resources"); }
-	});
+	    }).bind(this));
     }
 
     /**

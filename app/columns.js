@@ -1,9 +1,11 @@
-import { mapName } from "utils.js";
 import { Controller } from "controller.js";
+import { mapName } from "utils.js";
+import { Ajax } from "ajax.js";
 
 export class ColumnsController extends Controller {
     constructor(base) {
 	super(base);
+
 	this.retrievedResources = 0;
 
 	this.setupEventHandlers();
@@ -30,11 +32,8 @@ export class ColumnsController extends Controller {
      */
     load(resources, after) {
 	for (let resource of resources) {
-	    $.ajax({
-		type: "GET",
-		url: this.SWAPI_BASE + resource.name + "/schema",
-		error: function () { console.error("error retrieving schema for '" + resource.name+ + "'"); },
-		success: function (resource) { return function (response) {
+	    this.ajax.call(`${resource.name}/schema`)
+		.then((resource => { return (response => {
 		    resource.columns = Object.keys(response.properties).map(((x, i) => {
 			let out = mapName(x);
 			out.show = true;
@@ -57,8 +56,7 @@ export class ColumnsController extends Controller {
 			
 			$("#btnGet").prop("disabled", false);
 		    }
-		}.bind(this) }.bind(this)(resource)
-	    });
+		}).bind(this) }).bind(this)(resource));
 	}
 
 	if (after)

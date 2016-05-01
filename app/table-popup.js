@@ -31,11 +31,9 @@ export class TablePopupController extends TableBaseController {
 	    return;
 	
 	let columns = resource.columns;
-	
-	$.ajax({
-	    type: "GET",
-	    url: url,
-	    success: function(result) {
+
+	this.ajax.call(url, true)
+	    .then((result => {
 		$("#rest").append(clone($("#table-popup-template"), true));
 		
 		this.viewmodel = new Vue({
@@ -55,8 +53,7 @@ export class TablePopupController extends TableBaseController {
 		this.showOverlay();
 		if (callback)
 		    callback();
-	    }.bind(this)
-	});
+	    }).bind(this));
     }
 
     

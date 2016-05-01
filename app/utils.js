@@ -1,3 +1,7 @@
+String.prototype.endsWith = String.prototype.endsWith || function(ch) {
+    return this[this.length - 1] === ch;
+}
+
 String.prototype.contains = String.prototype.contains || function(needle) {
     return this.indexOf(needle) != -1;
 }

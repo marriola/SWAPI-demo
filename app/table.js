@@ -1,9 +1,11 @@
-import { mapName } from "utils.js";
 import { TableBaseController } from "table-base.js";
+import { mapName } from "utils.js";
+import { Ajax } from "ajax.js";
 
 export class TableController extends TableBaseController {
     constructor(base, resources, linkStore, linkResolver) {
 	super(base, resources, linkStore, linkResolver);
+
 	this.page = 1;
 
 	this.setupEventHandlers();
@@ -36,11 +38,9 @@ export class TableController extends TableBaseController {
 	let resource = this.resources.getSelected();
 	let url = this.SWAPI_BASE + resource.name + "/?page=" + page;
 	$("#spinner").show();
-	
-	$.ajax({
-	    type: "GET",
-	    url: url,
-	    success: function (response) {
+
+	this.ajax.call(`${resource.name}/?page=${page}`)
+	    .then((response => {
 		$("#btnPrev").prop("disabled", !response.previous);
 		$("#btnNext").prop("disabled", !response.next);
 		
@@ -70,9 +70,7 @@ export class TableController extends TableBaseController {
 		$("#spinner").hide();
 		$("html, body").animate({ scrollTop: 0 });
 		$("#table").show();
-	    }.bind(this),
-	    error: function(err) { }
-	});
+	    }).bind(this));
     }
 
     showOnMobile(name) {

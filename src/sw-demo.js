@@ -132,7 +132,7 @@ class VueDemo {
 	let retrieved;
 	
 	if (localStorage) {
-	    retrieved = localStorage.linkStore && localStorage.linkStore;
+	    retrieved = localStorage.linkStore;
 	} else {
 	    m = document.cookie.match(/linkStore=(.*?);/);
 	    retrieved = m[1];

@@ -14,7 +14,7 @@ export class LinkStore {
     }
     
     load() {
-	return LocalStorage.load("linkStore");
+	return LocalStorage.load("linkStore") || {};
     }
 
     save() {

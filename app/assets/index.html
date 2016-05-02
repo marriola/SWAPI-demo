@@ -55,10 +55,15 @@
     <div id="table-template" style="display: none;">
       <p>Displaying results <b>{{ pageStart }}</b> to <b>{{ pageEnd }}</b> out of <b>{{ count }}</b></p>
 
+      <div class="fixedTableContainer">
+      <div class="fixedTable">
       <table>
 	<thead>
 	  <tr>
-	    <th v-for="column in resource.columns" v-if="column.show" transition="fade-out" :mobile="showOnMobile(column.name) ? 'yes' : null">{{ column.displayName }}</th>
+	    <th v-for="column in resource.columns" v-if="column.show" transition="fade-out" :mobile="showOnMobile(column.name) ? 'yes' : null" class="fixed">
+	      {{ column.displayName }}
+	      <div>{{ column.displayName }}</div>
+	    </th>
 	  </tr>
 	</thead>
 	
@@ -79,7 +84,9 @@
 	    </td>
 	  </tr>
 	</tbody>
-      </table>	
+      </table>
+      </div>
+      </div>
     </div>
 
     <div id="table-popup-template" style="display: none">

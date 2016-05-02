@@ -211,6 +211,40 @@ tr:nth-child(odd) {
     background-color: #444;
 }
 
+/******************************************************************************/
+/* Fixed header table                                                          /
+/******************************************************************************/
+
+.fixedTableContainer {
+    background-color: #333;
+    padding-top: 30px;
+}
+
+.fixedTable {
+    overflow-y: auto;
+    height: 450px;
+}
+
+th.fixed {
+    height: 0;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: transparent;
+    border: none;
+    white-space: nowrap;
+}
+
+th.fixed > div {
+    color: white;
+    position: absolute;
+    padding: 9px 25px;
+    top: 151px;
+    margin-left: -25px;
+    margin-top: -2px;
+    line-height: normal;
+}
+
 #btnClose {
     display: none;
 }

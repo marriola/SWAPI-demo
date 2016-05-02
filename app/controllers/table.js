@@ -67,6 +67,7 @@ export class TableController extends TableBaseController {
 		this.linkResolver.resolve("#table");
 		$("#spinner").hide();
 		$("html, body").animate({ scrollTop: 0 });
+		$(".fixedTableContainer").height(document.body.clientHeight - 90);
 		$("#table").show();
 	    });
     }

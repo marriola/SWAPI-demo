@@ -23,7 +23,7 @@ export class ResourcesController extends Controller {
 		    out.selected = false;
 		    return out;
 		});
-		
+
 		this.viewModel = new Vue({
 		    el: "#resources",
 		    data: this.model,

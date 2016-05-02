@@ -1,3 +1,11 @@
+Array.from = Array.from || function(o) {
+    let out = [];
+    for (let i = 0; i < o.length; i++) {
+	out.push(o[i]);
+    }
+    return out;
+}
+
 String.prototype.endsWith = String.prototype.endsWith || function(ch) {
     return this[this.length - 1] === ch;
 }

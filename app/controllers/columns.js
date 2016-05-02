@@ -7,6 +7,8 @@ export class ColumnsController extends Controller {
 	super(base);
 
 	this.retrievedResources = 0;
+	this.dragging = null;
+	this.columnOrder = [];
 
 	this.setupEventHandlers();
     }
@@ -41,6 +43,15 @@ export class ColumnsController extends Controller {
 			return out;
 		    });
 
+		    let defaultOrder = resource.columns.map(x => x.name);
+		    let newOrder = this.getCachedOrder(resource);
+		    if (newOrder) {
+			resource.columns = this.reorder(resource.columns, defaultOrder, newOrder);
+			this.columnOrder = newOrder;
+		    } else {
+			this.columnOrder = defaultOrder;
+		    }
+		    
 		    if (++this.retrievedResources == resources.length) {
 			this.viewmodel = new Vue({
 			    el: "#columns",
@@ -51,8 +62,9 @@ export class ColumnsController extends Controller {
 			});
 			
 			$("#please-wait").fadeOut(250, function() {
+    			    this.setupDragAndDropEvents();
 			    $("#controls").slideDown(250);
-			});
+			}.bind(this));
 			
 			$("#btnGet").prop("disabled", false);
 		    }
@@ -63,6 +75,34 @@ export class ColumnsController extends Controller {
 	    after();
     }
 
+
+    getCachedOrder(resource) {
+	let retrieved;
+
+	if (localStorage) {
+	    retrieved = localStorage["order." + resource.name];
+	} else {
+	    let m = document.cookie.match(`order\.${resource.name}=(.*?);`);
+	    retrieved = m && m[1] || null;
+	}
+
+	return retrieved && JSON.parse(retrieved) || null;
+    }
+
+
+    cacheOrder(resource) {
+	let orderJson = JSON.stringify(this.columnOrder);
+	
+	if (localStorage) {
+	    localStorage["order." + resource.name] = orderJson;
+	} else {
+	    document.cookie = `order.${resource.name}=${orderJson};`;
+	}
+
+	return JSON.parse(retrieved);
+    }
+
+    
     showColumns(resource) {
 	$(".columnName").removeClass("selected");
 	$(`.columnName[data-index='${resource.index}']`).addClass("selected");
@@ -74,5 +114,89 @@ export class ColumnsController extends Controller {
 		$(`.columnPage[data-index='${resource.index}']`).fadeIn(250);
 	    });
 	}				
+    }
+
+
+    setupDragAndDropEvents() {
+	$(".columnContainer label").on("dragstart", e => {
+	    this.columnOrder = this.getColumnOrder();
+
+	    this.dragging = e.originalEvent.target;
+	    this.dragging.classList.add("dragging");
+	    e.originalEvent.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
+	});
+	
+	$(".columnContainer").on("dragover", e => {
+	    // Search up the DOM from our target for a <label> element whose parent has class columnContainer
+	    
+	    let target = e.originalEvent.target;
+	    let parent = target.parentElement;
+	    while (parent && !target.tagName === "LABEL") {
+		target = parent;
+		parent = target.parentElement;
+	    }
+
+	    if (parent.classList.contains("columnContainer")) {
+		e.preventDefault();
+
+		let halfHeight = target.clientHeight / 2;
+		let above = e.offsetY < halfHeight;
+		parent.insertBefore(this.dragging, above ? target : target.nextSibling);
+	    }
+	});
+
+	$(".columnContainer label").on("drop", e => {
+	    
+	});
+
+	$(".columnContainer label").on("dragend", e => {
+	    this.dragging.classList.remove("dragging");
+	    this.dragging = null;
+
+	    let resource = this.getSelectedResource();
+	    let oldOrder = this.columnOrder;
+	    this.columnOrder = this.getColumnOrder();
+	    resource.columns = this.reorder(resource.columns, oldOrder, this.columnOrder);
+	    this.cacheOrder(resource);
+	});
+    }
+
+
+    getColumnOrder() {
+	let $page = this.getSelectedPage();
+	return Array.from($page.find("input")).map((elt, idx) => elt.getAttribute("name"));
+    }
+    
+
+    getPage() {
+	return parseInt($("#columnFilter .columnName.selected").attr("data-index"));
+    }
+
+
+    getSelectedPage() {
+	let page = this.getPage();
+
+	return $(`#columnFilter .columnPage[data-index='${page}']`);
+    }
+    
+
+    getSelectedResource() {
+	let page = this.getPage();
+	
+	return $VueDemo.default.resources.model.store[page];
+    }
+    
+    reorder(columns, oldOrder, newOrder) {
+	let indices = [];
+	for (let col of newOrder) {
+	    indices.push(oldOrder.indexOf(col));
+	}
+
+	let out = [];
+	for (let i of indices) {
+	    out.push(columns[i]);
+	}
+
+	return out;
     }
 }

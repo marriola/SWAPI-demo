@@ -16,11 +16,13 @@ export class TablePopupController extends TableBaseController {
     
     showOverlay() {
 	$("#table-popup, #overlay").fadeIn();
+	$("body").css("overflow", "hidden");
     }
 
 
     hideOverlay() {
 	$("#table-popup, #overlay").fadeOut();
+	$("body").css("overflow", "auto");
     }
 
     

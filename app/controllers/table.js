@@ -1,5 +1,5 @@
 import { TableBaseController } from "controllers/table-base.js";
-import { mapName } from "utils.js";
+import { clone, mapName } from "utils.js";
 import { Ajax } from "ajax.js";
 
 export class TableController extends TableBaseController {
@@ -40,14 +40,11 @@ export class TableController extends TableBaseController {
 	$("#spinner").show();
 
 	this.ajax.call(`${resource.name}/?page=${page}`)
-	    .then(response => {
-		$("#btnPrev").prop("disabled", !response.previous);
-		$("#btnNext").prop("disabled", !response.next);
-		
-		$("#table").remove();
-		$("#table-template").clone().first().attr("id", "table").show().appendTo($("#rest"));
-		
-		response.page = this.page;
+	    .then(response => {		
+		clone($("#table-template"), true)
+		    .first()
+		    .attr("id", "table")
+		    .appendTo($("#rest"));
 		
 		this.viewmodel = new Vue({
 		    el: '#table',
@@ -59,15 +56,16 @@ export class TableController extends TableBaseController {
 			results: response.results,
 			linkStore: this.linkStore.store
 		    },
-		    methods: $.extend({}, this.baseMethods, {
-			showOnMobile: this.showOnMobile
-		    })
+		    methods: $.extend({}, this.baseMethods, { showOnMobile: this.showOnMobile })
 		});
 		
-		this.linkResolver.resolve("#table");
+		$("#btnPrev").prop("disabled", !response.previous);
+		$("#btnNext").prop("disabled", !response.next);
 		$("#spinner").hide();
 		$("html, body").animate({ scrollTop: 0 });
 		$("#table").show();
+
+	    	this.linkResolver.resolve("#table");
 	    });
     }
 

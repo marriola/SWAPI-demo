@@ -14,6 +14,16 @@ export class TablePopupController extends TableBaseController {
     }
 
     
+    showOverlay() {
+	$("#table-popup, #overlay").fadeIn();
+    }
+
+
+    hideOverlay() {
+	$("#table-popup, #overlay").fadeOut();
+    }
+
+    
     /**
      * Retrieves entity data then populates and displays the div#table-popup element
      */
@@ -51,15 +61,5 @@ export class TablePopupController extends TableBaseController {
 		if (callback)
 		    callback();
 	    });
-    }
-
-    
-    showOverlay() {
-	$("#table-popup, #overlay").fadeIn();
-    }
-
-
-    hideOverlay() {
-	$("#table-popup, #overlay").fadeOut();
     }
 }

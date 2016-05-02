@@ -34,7 +34,7 @@ export class TableController extends TableBaseController {
      *
      * @param page {number}		The page number to load
      */
-    load(page="", after) {
+    load(page="", after=null) {
 	let resource = this.resources.getSelected();
 	let url = this.SWAPI_BASE + resource.name + "/?page=" + page;
 	$("#spinner").show();

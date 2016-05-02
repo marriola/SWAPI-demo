@@ -30,6 +30,7 @@
 	    <h3 style="display: inline-block; margin: 0px;">Columns</h3>
 	    <span id="expandIndicator" style="float: right;" class="closed"></span>
 	</div></a>
+	
 	<div id="columns" style="display: none;">
 	  <div class="columnNameHeader">
 	    <a v-for="resource in resources" href="javascript:void(0)" class="columnName" @click="showColumns(resource)" data-index="{{ resource.index }}">
@@ -40,7 +41,7 @@
 	  <div v-for="resource in resources" style="display: none" class="columnPage" data-index="{{ resource.index }}">
 	    <div class="columnContainer">
 	      <label v-for="column in resource.columns" v-bind:class="{ 'bold': column.hasUrl }" draggable="true">
-		<input type="checkbox" name="{{ column.name }}" v-model="column.show">
+		<input type="checkbox" name="{{ column.name }}" v-model="column.show" @change="saveFilter(resource)">
 		{{ column.displayName }}
 	      </label>
 	    </div>
@@ -66,15 +67,19 @@
 	</thead>
 	
 	<tbody>
-	  <tr v-for="result in results">
+	  <tr v-for="result in results">	    
 	    <td v-for="column in resource.columns" v-if="column.show" transition="fade-out" :mobile="showOnMobile(column.name) ? 'yes' : null">
+	      <!-- Array of URLs -->
 	      <template v-if="isArray(result[column.name])">
 		<a v-for="(index, url) in result[column.name]" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
 	      </template>
+	      <!-- Either plain text or single URL -->
 	      <template v-else>
+		<!-- Single URL -->
 		<template v-if="column.hasUrl && result[column.name]">
 		  <a href="{{ result[column.name] }}" class="link" v-bind:class="{ 'not-set': !linkStore[result[column.name]] }" @click="clickLink(column, result[column.name], $event)">{{ linkStore[result[column.name]] }}</a>
 		</template>
+		<!-- Plain text -->
 		<template v-else>
 		  {{ sanitize(result[column.name]) }}
 		</template>
@@ -92,14 +97,19 @@
 	  <tr v-for="column in columns">
 	    <td>{{ column.displayName }}</td>
 	    
+	    <!-- Array of URLs -->
 	    <td v-if="isArray(result[column.name])">
 	      <a v-for="(index, url) in result[column.name]" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
 	    </td>
 	    
+	    <!-- Plain text or single URL -->
 	    <td v-else>
+	      <!-- Single URL -->
 	      <template v-if="column.hasUrl && result[column.name]">
 		<a href="{{ result[column.name] }}" @click="clickLink(column, result[column.name], $event)" class="link" v-bind:class="{ 'not-set': !linkStore[result[column.name]] }">{{ linkStore[result[column.name]] }}</a>
 	      </template>
+
+	      <!-- Plain text -->
 	      <template v-else>{{ sanitize(result[column.name]) }}</template>
 	    </td>
 	  </tr>

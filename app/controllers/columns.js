@@ -9,7 +9,6 @@ export class ColumnsController extends Controller {
 
 	this.retrievedResources = 0;
 	this.dragging = null;
-	this.columnOrder = [];
 
 	this.setupEventHandlers();
     }
@@ -38,6 +37,8 @@ export class ColumnsController extends Controller {
 	    // Initiate call
 	    this.ajax.call(`${resource.name}/schema`)
 		.then((resource => { return response => {
+		    let columnFilter = this.loadFilter(resource);
+		    
 		    // Decorate columns list with these properties:
 		    //
 		    // displayName    A user-friendly version of the column name
@@ -46,19 +47,18 @@ export class ColumnsController extends Controller {
 		    // hasUrl         True if this column contains URLs
 		    resource.columns = Object.keys(response.properties).map((x, i) => {
 			let out = mapName(x);
-			out.show = true;
+			out.show = !columnFilter || !!columnFilter[out.name];
 			out.hasUrl = response.properties[x].description.toLowerCase().contains("url");
 			return out;
 		    });
 
 		    // Retrieve column order from local storage and reorder if found
-		    let defaultOrder = resource.columns.map(x => x.name);
-		    let newOrder = LocalStorage.load("order." + resource.name);
-		    if (newOrder) {
-			resource.columns = reorder(resource.columns, defaultOrder, newOrder);
-			this.columnOrder = newOrder;
+		    resource.defaultOrder = resource.columns.map(x => x.name);
+		    resource.order = LocalStorage.load("order." + resource.name);
+		    if (resource.order) {
+			resource.columns = reorder(resource.columns, resource.defaultOrder, resource.order);
 		    } else {
-			this.columnOrder = defaultOrder;
+			resource.order = resource.defaultOrder;
 		    }
 		    
 		    // If we've done the last resource, fill and display the column filter view
@@ -67,7 +67,8 @@ export class ColumnsController extends Controller {
 			    el: "#columns",
 			    data: { resources },
 			    methods: {
-				showColumns: this.showColumns
+				showColumns: this.showColumns,
+				saveFilter: this.saveFilter
 			    }
 			});
 			
@@ -103,6 +104,20 @@ export class ColumnsController extends Controller {
     }
 
 
+    loadFilter(resource) {
+	return LocalStorage.load(resource.name + ".show");
+    }
+
+
+    saveFilter(resource) {
+	let filter = {};
+	for (let column of resource.columns) {
+	    filter[column.name] = column.show;
+	}
+	LocalStorage.save(`${resource.name}.show`, filter);
+    }
+
+
     setupDragAndDropEvents() {
 	$(".columnContainer label")
 	    .on("mousedown", e => {
@@ -114,18 +129,20 @@ export class ColumnsController extends Controller {
 		this.dragging = null;
 	    })
 	    .on("dragstart", e => {
-		this.columnOrder = this.getColumnOrder();
 		e.originalEvent.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
 	    })
 	    .on("dragend", e => {
 		this.dragging.classList.remove("dragging");
 		this.dragging = null;
 
+		// Set new column order
 		let resource = this.getSelectedResource();
-		let oldOrder = this.columnOrder;
-		this.columnOrder = this.getColumnOrder();
-		resource.columns = reorder(resource.columns, oldOrder, this.columnOrder);
-		LocalStorage.save("order." + resource.name, this.columnOrder);
+		let oldOrder = resource.order;
+		resource.order = this.getColumnOrder();
+		
+		// Reorder columns and save column order
+		resource.columns = reorder(resource.columns, oldOrder, resource.order);
+		LocalStorage.save("order." + resource.name, resource.order);
 	    });
 	
 	$(".columnContainer").on("dragover", e => {

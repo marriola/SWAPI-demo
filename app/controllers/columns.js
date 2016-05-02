@@ -71,9 +71,9 @@ export class ColumnsController extends Controller {
 			    }
 			});
 			
-			$("#please-wait").fadeOut(250, function() {
+			$("#please-wait").animate({ top: -32 }, 350, "swing", function() {
     			    this.setupDragAndDropEvents();
-			    $("#controls").slideDown(250);
+			    $("#controls").slideDown(350);
 			}.bind(this));
 			
 			$("#btnGet").prop("disabled", false);

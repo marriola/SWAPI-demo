@@ -11,6 +11,12 @@ export class TablePopupController extends TableBaseController {
 
     setupEventHandlers() {
 	$("#overlay, #btnClose").on("click", this.hideOverlay);
+
+    	$(document).on("keyup", e => {
+	    if ((e.which || e.keyCode) == 27) {
+		this.hideOverlay();
+	    }
+	});
     }
 
     

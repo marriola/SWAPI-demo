@@ -37,16 +37,21 @@ export class ResourcesController extends Controller {
 	    });
     }
 
+    
     /**
      * Returns the resource currently selected by the select#resources element
      */
     getSelected() {
 	return this.model.store[this.model.selected];
     }
+
     
+    /**
+     * Resets search results when selecting a different resource.
+     */
     selectResource (i) {
 	$("#table").remove();
 	$("#btnPrev, #btnNext").prop("disabled", true);
-	$VueDemo.page = 1;
+	$VueDemo.default.table.page = 1;
     }
 }

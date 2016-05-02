@@ -1,6 +1,7 @@
 import { Controller } from "controllers/controller.js";
 import { mapName } from "utils.js";
 import { Ajax } from "ajax.js";
+import { LocalStorage } from "local-storage.js";
 
 export class ColumnsController extends Controller {
     constructor(base) {
@@ -44,7 +45,7 @@ export class ColumnsController extends Controller {
 		    });
 
 		    let defaultOrder = resource.columns.map(x => x.name);
-		    let newOrder = this.getCachedOrder(resource);
+		    let newOrder = LocalStorage.load("order." + resource.name);
 		    if (newOrder) {
 			resource.columns = this.reorder(resource.columns, defaultOrder, newOrder);
 			this.columnOrder = newOrder;
@@ -76,33 +77,6 @@ export class ColumnsController extends Controller {
     }
 
 
-    getCachedOrder(resource) {
-	let retrieved;
-
-	if (localStorage) {
-	    retrieved = localStorage["order." + resource.name];
-	} else {
-	    let m = document.cookie.match(`order\.${resource.name}=(.*?);`);
-	    retrieved = m && m[1] || null;
-	}
-
-	return retrieved && JSON.parse(retrieved) || null;
-    }
-
-
-    cacheOrder(resource) {
-	let orderJson = JSON.stringify(this.columnOrder);
-	
-	if (localStorage) {
-	    localStorage["order." + resource.name] = orderJson;
-	} else {
-	    document.cookie = `order.${resource.name}=${orderJson};`;
-	}
-
-	return JSON.parse(retrieved);
-    }
-
-    
     showColumns(resource) {
 	$(".columnName").removeClass("selected");
 	$(`.columnName[data-index='${resource.index}']`).addClass("selected");
@@ -157,7 +131,7 @@ export class ColumnsController extends Controller {
 	    let oldOrder = this.columnOrder;
 	    this.columnOrder = this.getColumnOrder();
 	    resource.columns = this.reorder(resource.columns, oldOrder, this.columnOrder);
-	    this.cacheOrder(resource);
+	    LocalStorage.save("order." + resource.name, this.columnOrder);
 	});
     }
 

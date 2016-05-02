@@ -1,3 +1,5 @@
+import { LocalStorage } from "local-storage.js";
+
 export class LinkStore {
     constructor() {
 	this.store = this.load();
@@ -12,25 +14,10 @@ export class LinkStore {
     }
     
     load() {
-	let retrieved;
-	
-	if (localStorage) {
-	    retrieved = localStorage.linkStore;
-	} else {
-	    m = document.cookie.match(/linkStore=(.*?);/);
-	    retrieved = m[1];
-	}
-
-	return retrieved && JSON.parse(retrieved) || {};
+	return LocalStorage.load("linkStore");
     }
 
     save() {
-	let linkStoreJson = JSON.stringify(this.store);
-	
-	if (localStorage) {
-	    localStorage.linkStore = linkStoreJson;
-	} else {
-	    document.cookie = `linkStore='${linkStoreJson}'; expires=Tue, 19 Jan 2038 03:14:07 UTC;`;
-	}
+	LocalStorage.save("linkStore", this.store);
     }
 }

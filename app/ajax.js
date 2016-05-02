@@ -7,7 +7,7 @@ export class Ajax {
 	this.errorCallback = errorCallback || this.ajaxError;
     }
 
-    call(url, raw=false, type="GET", errorCallback=null) {
+    call(url="", raw=false, type="GET", errorCallback=null) {
 	this.lastUrl = this.base + url;
 	
 	return new Promise((resolve, reject) => {

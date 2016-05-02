@@ -26,6 +26,14 @@ body {
     border-bottom: 1px solid white;
 }
 
+#github {
+    float: right;
+    width: 48px;
+    height: 44px;
+    margin-right: 15px;
+    background: no-repeat center url('github.png');
+}
+
 #rest {
     margin-top: 90px;
     padding-top: 10px;

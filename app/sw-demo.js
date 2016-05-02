@@ -5,7 +5,6 @@ import { ColumnsController } from "controllers/columns.js"
 import { TableController } from "controllers/table.js"
 import { TablePopupController } from "controllers/table-popup.js"
 
-
 //Vue.config.debug = true;
 class VueDemo {
     constructor() {

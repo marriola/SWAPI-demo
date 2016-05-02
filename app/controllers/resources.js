@@ -15,7 +15,7 @@ export class ResourcesController extends Controller {
      * Retrieves the list of available resources from the API, then gets columns for each when done
      */
     load(after) {
-	this.ajax.call("")
+	this.ajax.call()
 	    .then(response => {
 		// Decorate resources list with these properties:
 		//

@@ -9,6 +9,8 @@
     </div>
 
     <div id="controls" style="display: none;">
+      <a id="github" target="_blank" href="https://github.com/marriola/SWAPI-demo"></a>
+      
       <select id="resources" v-model="selected" @change="selectResource">
 	<option v-for="resource in store" value="{{ $index }}">{{ resource.displayName }}</option>
       </select>

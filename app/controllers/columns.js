@@ -35,8 +35,15 @@ export class ColumnsController extends Controller {
      */
     load(resources, after) {
 	for (let resource of resources) {
+	    // Initiate call
 	    this.ajax.call(`${resource.name}/schema`)
 		.then((resource => { return response => {
+		    // Decorate columns list with these properties:
+		    //
+		    // displayName    A user-friendly version of the column name
+		    // index          The column's index in the list
+		    // show           True if this column is currently visible
+		    // hasUrl         True if this column contains URLs
 		    resource.columns = Object.keys(response.properties).map((x, i) => {
 			let out = mapName(x);
 			out.show = true;
@@ -44,6 +51,7 @@ export class ColumnsController extends Controller {
 			return out;
 		    });
 
+		    // Retrieve column order from local storage and reorder if found
 		    let defaultOrder = resource.columns.map(x => x.name);
 		    let newOrder = LocalStorage.load("order." + resource.name);
 		    if (newOrder) {
@@ -53,6 +61,7 @@ export class ColumnsController extends Controller {
 			this.columnOrder = defaultOrder;
 		    }
 		    
+		    // If we've done the last resource, fill and display the column filter view
 		    if (++this.retrievedResources == resources.length) {
 			this.viewmodel = new Vue({
 			    el: "#columns",

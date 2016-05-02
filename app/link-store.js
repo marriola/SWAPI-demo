@@ -20,4 +20,9 @@ export class LinkStore {
     save() {
 	LocalStorage.save("linkStore", this.store);
     }
+
+    clear() {
+	this.store = {};
+	this.save();
+    }
 }

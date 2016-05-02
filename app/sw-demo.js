@@ -19,6 +19,11 @@ class VueDemo {
 	this.columns = new ColumnsController(this.SWAPI_BASE);
 	this.table = new TableController(this.SWAPI_BASE, this.resources, this.linkStore, this.linkResolver);
 	this.tablePopup = new TablePopupController(this.SWAPI_BASE, this.resources, this.linkStore, this.linkResolver);
+
+	$("#btnClear").on("click", e => {
+	    this.linkStore.clear();
+	    alert("Done!");
+	});
 	
 	this.resources.load(() => {
 	    this.columns.load(this.resources.model.store);

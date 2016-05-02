@@ -104,13 +104,29 @@ export class ColumnsController extends Controller {
 
 
     setupDragAndDropEvents() {
-	$(".columnContainer label").on("dragstart", e => {
-	    this.columnOrder = this.getColumnOrder();
+	$(".columnContainer label")
+	    .on("mousedown", e => {
+		e.originalEvent.target.classList.add("dragging");
+		this.dragging = e.target;
+	    })
+	    .on("mouseup", e => {
+		this.dragging.classList.remove("dragging");
+		this.dragging = null;
+	    })
+	    .on("dragstart", e => {
+		this.columnOrder = this.getColumnOrder();
+		e.originalEvent.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
+	    })
+	    .on("dragend", e => {
+		this.dragging.classList.remove("dragging");
+		this.dragging = null;
 
-	    this.dragging = e.originalEvent.target;
-	    this.dragging.classList.add("dragging");
-	    e.originalEvent.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
-	});
+		let resource = this.getSelectedResource();
+		let oldOrder = this.columnOrder;
+		this.columnOrder = this.getColumnOrder();
+		resource.columns = reorder(resource.columns, oldOrder, this.columnOrder);
+		LocalStorage.save("order." + resource.name, this.columnOrder);
+	    });
 	
 	$(".columnContainer").on("dragover", e => {
 	    // Search up the DOM from our target for a <label> element whose parent has class columnContainer
@@ -127,24 +143,11 @@ export class ColumnsController extends Controller {
 
 		let halfHeight = target.clientHeight / 2;
 		let above = e.offsetY < halfHeight;
-		parent.insertBefore(this.dragging, above ? target : target.nextSibling);
+		let sibling = above ? target : target.nextSibling;
+		parent.insertBefore(this.dragging, sibling);
 	    }
 	});
 
-	$(".columnContainer label").on("drop", e => {
-	    
-	});
-
-	$(".columnContainer label").on("dragend", e => {
-	    this.dragging.classList.remove("dragging");
-	    this.dragging = null;
-
-	    let resource = this.getSelectedResource();
-	    let oldOrder = this.columnOrder;
-	    this.columnOrder = this.getColumnOrder();
-	    resource.columns = reorder(resource.columns, oldOrder, this.columnOrder);
-	    LocalStorage.save("order." + resource.name, this.columnOrder);
-	});
     }
 
 

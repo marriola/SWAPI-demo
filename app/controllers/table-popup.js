@@ -37,7 +37,7 @@ export class TablePopupController extends TableBaseController {
      */
     load(url, callback) {
 	let resourceName;
-	let match = url.match(/http:\/\/swapi.co\/api\/(\w+).*/);
+	let match = url.match(this.SWAPI_BASE + "(\\w+)/.*");
 	if (!match) {
 	    return;
 	} else {

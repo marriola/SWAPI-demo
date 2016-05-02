@@ -1,269 +1,275 @@
 body {
-	background-color: #222;
-	color: #ddd;
-	font-family: sans-serif;
+    background-color: #222;
+    color: #ddd;
+    font-family: Tahoma, Geneva, sans-serif;
+    /* font-family: Trebuchet MS1, Helvetica, sans-serif; */
 }
 
 #please-wait {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-top: -32px;
-	margin-left: -32px;
-	background: no-repeat center url('ajax-loader-lg.gif');
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -32px;
+    margin-left: -32px;
+    background: no-repeat center url('ajax-loader-lg.gif');
 }
 
 #controls {
-	z-index: 1000;
-	position: fixed;
-	padding: 10px;
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	height: 104px;
-	background-color: #111;
-	border-bottom: 1px solid white;
+    z-index: 1000;
+    position: fixed;
+    padding: 10px;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 104px;
+    background-color: #111;
+    border-bottom: 1px solid white;
 }
 
 #rest {
-	margin-top: 104px;
-	padding-top: 10px;
+    margin-top: 104px;
+    padding-top: 10px;
 }
 
 a {
-	color: #8f0;
-	text-decoration: none;
+    color: #8f0;
+    text-decoration: none;
 }
 
 a:visited {
-	color: #f80;
+    color: #f80;
 }
 
 a:active {
-	color: #222;
-	background-color: #8f0;
+    color: #222;
+    background-color: #8f0;
 }
 
 a.waiting::after {
-	content: url('ajax-loader.gif');
+    content: url('ajax-loader.gif');
 }
 
 a.not-set {
-	background-image: url('ajax-loader.gif');
-	background-repeat: no-repeat;
-	background-position: center;
-	width: 16px;
-	height: 16px;
+    background-image: url('ajax-loader.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
 }
 
 button, select {
-	background-color: gray;
-	color: black;
-	border: 0px;
-	border-radius: 5px;
-	margin: 3px;
-	font-size: 12px;
+    background-color: gray;
+    color: black;
+    border: 0px;
+    border-radius: 5px;
+    margin: 3px;
 }
 
 button:focus, select:focus {
-    outline: 0;
-}
+		  outline: 0;
+	      }
 
 button:active {
-	color: gray;
-	background: black;
+    color: gray;
+    background: black;
 }
 
 /* button:hover {
 	background-color: #444;
 }
- */
+*/
 button[disabled] {
-	background-color: transparent;
-	color: #777;
-	border: 1px solid #777;
+    background-color: transparent;
+    color: #777;
+    border: 1px solid #777;
 }
 
 #columnFilter {
-	display: inline-block;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	background-color: #666;
-	border-radius: 5px;
-	padding: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #666;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #columnFilterExpand > div {
-	font-size: 14px;
+    font-size: 14px;
 }
 
 #columns label {
-	display: block;
+    display: block;
+}
+
+.columnContainer label {
+    cursor: move;
+}
+
+label.dragging {
+    opacity: 0.75;
+    background-color: black;
 }
 
 .closed::after {
-	content: '▼';
+    content: '▼';
 }
 
 .open::after {
-	content: '▲';
+    content: '▲';
 }
 
 .columnPage {
-	display: inline-block;
+    display: inline-block;
 }
 
 .columnNameHeader {
-	display: table;
-	/* width: 100%; */
+    display: table;
+    /* width: 100%; */
 }
 
 .columnNameHeader > a {
-	padding-left: 10px;
-	padding-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .columnName {
-	display: table-cell;
-	background-color: #666;
-	color: #222;
-	text-align: center;
-	vertical-align: middle;
+    display: table-cell;
+    background-color: #666;
+    color: #222;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .columnName.selected {
-	background-color: #222;
-	color: #666;
+    background-color: #222;
+    color: #666;
 }
 
 .bold {
-	font-weight: bold;
-	text-decoration: underline;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 #overlay {
-	z-index: 2000;
-	position: fixed;
-	background: rgba(0, 0, 0, .75);
-	top: 0px;
-	left: 0px;
-	height: 0px;
-	width: 100%;
-	height: 100%;
+    z-index: 2000;
+    position: fixed;
+    background: rgba(0, 0, 0, .75);
+    top: 0px;
+    left: 0px;
+    height: 0px;
+    width: 100%;
+    height: 100%;
 }
 
 #table-popup {
-	z-index: 2001;
-	position: fixed;
-	width: 600px;
-	height: 400px;
-	top: 50%;
-	left: 50%;
-	margin-top: -200px;
-	margin-left: -300px;
-	overflow-y: scroll;
-	
-	background-color: #666;
-	border-radius: 5px;
-	padding: 5px;
+    z-index: 2001;
+    position: fixed;
+    width: 600px;
+    height: 400px;
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -300px;
+    overflow-y: scroll;
+    
+    background-color: #666;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #table-popup table {
-	width: 100%;
+    width: 100%;
 }
 
 .link {
-	display: inline-block;
-	background-color: #666;
-	border-radius: 5px;
-	padding: 2px;
-	margin: 1px;
+    display: inline-block;
+    background-color: #666;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 1px;
 }
 
 table {
-	border-collapse: separate;
-	border-spacing: 2px;
-	font-size: 14px;
+    border-collapse: separate;
+    border-spacing: 2px;
+    font-size: 14px;
 }
 
 th {
-	background-color: #222;
+    background-color: #222;
 }
 
 td {
-	padding: 3px;
+    padding: 3px;
 }
 
 tr:nth-child(even) {
-	background-color: #333;
+    background-color: #333;
 }
 
 tr:nth-child(odd) {
-	background-color: #444;
+    background-color: #444;
 }
 
 #btnClose {
-	display: none;
-}
-
-@media (max-device-width: 600px) {
+    display: none;
 }
 
 @media (max-device-width: 600px), (max-width: 600px) {
-	button, select {
-		font-size: 16px;
-	}
-	
-	table {
-		font-size: 16px;
-	}
+    button, select {
+        font-size: 16px;
+    }
 
-	#controls {
-		height: 50px;
-	}
-	
-	#rest {
-		margin-top: 50px;
-	}
-	
-	#columnFilter {
-		display: none;
-	}
+    table {
+        font-size: 16px;
+    }
 
-	#table td:not([mobile]), #table th:not([mobile]) {
-		display: none;
-	}
-	
-	#table-popup {
-		width: 100%;
-		height: 100%;
-		top: 0px;
-		left: 0px;
-		margin: 0px;
-	}
-	
-	#btnClose {
-		display: block;
-		position: fixed;
-		right: 10px;
-		background-color: black;
-   		opacity: 0.75;
-		width: 20px;
-		height: 24px;
-		font-size: 16px;
-	}
-	
-	#btnClose:active {
-		color: #222;
-		background-color: #8f0;
-	}
+    #controls {
+	height: 50px;
+    }
+
+    #rest {
+	margin-top: 50px;
+    }
+
+    #columnFilter {
+	display: none;
+    }
+
+    #table td:not([mobile]), #table th:not([mobile]) {
+        display: none;
+    }
+
+    #table-popup {
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	margin: 0px;
+    }
+
+    #btnClose {
+	display: block;
+	position: fixed;
+	right: 10px;
+	background-color: black;
+	opacity: 0.75;
+	width: 20px;
+	height: 24px;
+	font-size: 16px;
+    }
+
+    #btnClose:active {
+	color: #222;
+	background-color: #8f0;
+    }
 }
 
 .fade-out-transition {
-	transition: all .3s ease;
+    transition: all .3s ease;
 }
 
 .fade-out-enter, .fade-out-leave {
-	opacity: 0;
-	width: 0px;
+    opacity: 0;
+    width: 0px;
 }

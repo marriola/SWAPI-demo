@@ -54,3 +54,18 @@ export function clone($elt, replace=false) {
 	$("#" + id).remove();
     return $elt.clone().first().attr("id", id);
 }
+
+export function reorder(columns, oldOrder, newOrder) {
+    let indices = [];
+    for (let col of newOrder) {
+	indices.push(oldOrder.indexOf(col));
+    }
+
+    let out = [];
+    for (let i of indices) {
+	out.push(columns[i]);
+    }
+
+    return out;
+}
+

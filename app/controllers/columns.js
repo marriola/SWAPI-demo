@@ -1,7 +1,7 @@
 import { Controller } from "controllers/controller.js";
-import { mapName } from "utils.js";
-import { Ajax } from "ajax.js";
 import { LocalStorage } from "local-storage.js";
+import { Ajax } from "ajax.js";
+import { mapName, reorder } from "utils.js";
 
 export class ColumnsController extends Controller {
     constructor(base) {
@@ -47,7 +47,7 @@ export class ColumnsController extends Controller {
 		    let defaultOrder = resource.columns.map(x => x.name);
 		    let newOrder = LocalStorage.load("order." + resource.name);
 		    if (newOrder) {
-			resource.columns = this.reorder(resource.columns, defaultOrder, newOrder);
+			resource.columns = reorder(resource.columns, defaultOrder, newOrder);
 			this.columnOrder = newOrder;
 		    } else {
 			this.columnOrder = defaultOrder;
@@ -77,6 +77,9 @@ export class ColumnsController extends Controller {
     }
 
 
+    /**
+     * Displays the columns page for the currently selected resource in the column filter
+     */
     showColumns(resource) {
 	$(".columnName").removeClass("selected");
 	$(`.columnName[data-index='${resource.index}']`).addClass("selected");
@@ -130,7 +133,7 @@ export class ColumnsController extends Controller {
 	    let resource = this.getSelectedResource();
 	    let oldOrder = this.columnOrder;
 	    this.columnOrder = this.getColumnOrder();
-	    resource.columns = this.reorder(resource.columns, oldOrder, this.columnOrder);
+	    resource.columns = reorder(resource.columns, oldOrder, this.columnOrder);
 	    LocalStorage.save("order." + resource.name, this.columnOrder);
 	});
     }
@@ -142,35 +145,21 @@ export class ColumnsController extends Controller {
     }
     
 
-    getPage() {
+    getPageNumber() {
 	return parseInt($("#columnFilter .columnName.selected").attr("data-index"));
     }
 
 
     getSelectedPage() {
-	let page = this.getPage();
+	let page = this.getPageNumber();
 
 	return $(`#columnFilter .columnPage[data-index='${page}']`);
     }
     
 
     getSelectedResource() {
-	let page = this.getPage();
+	let page = this.getPageNumber();
 	
 	return $VueDemo.default.resources.model.store[page];
-    }
-    
-    reorder(columns, oldOrder, newOrder) {
-	let indices = [];
-	for (let col of newOrder) {
-	    indices.push(oldOrder.indexOf(col));
-	}
-
-	let out = [];
-	for (let i of indices) {
-	    out.push(columns[i]);
-	}
-
-	return out;
-    }
+    }    
 }

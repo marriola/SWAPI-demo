@@ -23,7 +23,7 @@ export class Ajax {
 		    ];
 
 		    for (let cb of errorCallbacks) {
-			if (cb && !cb.bind(this)(jqXHR, status, error)) {
+			if (cb && !cb(jqXHR, status, error)) {
 			    break;
 			}
 		    }

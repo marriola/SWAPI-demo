@@ -92,29 +92,31 @@
 
     <div id="table-popup-template" style="display: none">
       <a id="btnClose" class="link" href="javascript:$VueDemo.default.tablePopup.hideOverlay()">[x]</a>
+      <div id="table-popup-scroll">
       <table>
 	<tbody>
-	  <tr v-for="column in columns">
-	    <td>{{ column.displayName }}</td>
+	  <tr v-for="row in result" v-bind:class="{ 'hidden-col': !row.show }">
+	    <td>{{ row.displayName }}</td>
 	    
 	    <!-- Array of URLs -->
-	    <td v-if="isArray(result[column.name])">
-	      <a v-for="(index, url) in result[column.name]" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
+	    <td v-if="isArray(row.value)">
+	      <a v-for="(index, url) in row.value" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
 	    </td>
 	    
 	    <!-- Plain text or single URL -->
 	    <td v-else>
 	      <!-- Single URL -->
-	      <template v-if="column.hasUrl && result[column.name]">
-		<a href="{{ result[column.name] }}" @click="clickLink(column, result[column.name], $event)" class="link" v-bind:class="{ 'not-set': !linkStore[result[column.name]] }">{{ linkStore[result[column.name]] }}</a>
+	      <template v-if="row.hasUrl && row.value">
+		<a href="{{ row.value }}" @click="clickLink(column, row.value, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[row.value] }">{{ linkStore[row.value] }}</a>
 	      </template>
 
 	      <!-- Plain text -->
-	      <template v-else>{{ sanitize(result[column.name]) }}</template>
+	      <template v-else>{{ sanitize(row.value) }}</template>
 	    </td>
 	  </tr>
 	</tbody>
       </table>
+      </div>
     </div>
 
 
@@ -122,6 +124,7 @@
     <!--<script src="http://cdn.jsdelivr.net/vue/1.0.16/vue.js"></script>-->
     <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/vue/1.0.21/vue.min.js"></script>
+    <script src="vendor.js" type="text/javascript"></script>
     <script src="app.js" type="text/javascript"></script>
 
     <script type="text/javascript">

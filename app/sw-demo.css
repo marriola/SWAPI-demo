@@ -183,7 +183,6 @@ label.dragging {
     left: 50%;
     margin-top: -200px;
     margin-left: -300px;
-    overflow-y: scroll;
     
     background-color: #666;
     border-radius: 5px;
@@ -192,6 +191,16 @@ label.dragging {
 
 #table-popup table {
     width: 100%;
+}
+
+#table-popup-scroll {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.hidden-col {
+    /* color: #888; */
+    opacity: 0.33;
 }
 
 .link {

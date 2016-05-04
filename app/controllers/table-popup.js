@@ -1,5 +1,5 @@
 import { TableBaseController } from "controllers/table-base.js"
-import { clone } from "utils.js"
+import { clone, join } from "utils.js"
 
 export class TablePopupController extends TableBaseController {
     constructor(base, resources, linkStore, linkResolver) {
@@ -53,6 +53,14 @@ export class TablePopupController extends TableBaseController {
 	this.ajax.call(url, true)
 	    .then(result => {
 		$("#rest").append(clone($("#table-popup-template"), true));
+
+		result = join(resource.order.map(x => ({ name: x, value: result[x] })),
+			      resource.columns,
+			      (r, c) => r.name == c.name);
+
+		let shown = result.filter(x => x.show);
+		let hidden = result.filter(x => !x.show);
+		result = shown.concat(hidden);
 		
 		this.viewmodel = new Vue({
 		    el: "#table-popup",
@@ -69,5 +77,8 @@ export class TablePopupController extends TableBaseController {
 		if (callback)
 		    callback();
 	    });
+    }
+
+    arrayify(result, columns) {
     }
 }

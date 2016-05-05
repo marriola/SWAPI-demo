@@ -72,8 +72,13 @@ export class TablePopupController extends TableBaseController {
 
 		    data: {
 			columns,
-			result,
+			shown,
+			hidden,
 			linkStore: this.linkStore.store
+		    },
+
+		    methods: {
+			revealHiddenColumns: this.revealHiddenColumns
 		    }
 		});
 
@@ -82,5 +87,22 @@ export class TablePopupController extends TableBaseController {
 		if (callback)
 		    callback();
 	    });
+    }
+
+    revealHiddenColumns() {
+	for (let column of this.$data.hidden) {
+	    let $expander = $("#table-popup .hidden-columns-expander");
+	    let $scroll = $("#table-popup-scroll");
+	    
+	    $scroll.animate({
+		scrollTop: $scroll.offset().top + $scroll.outerHeight()
+	    });
+
+	    $expander.slideUp(() => {
+		$expander.remove();
+	    });
+
+	    $("#table-popup #tp-" + column.name).slideDown();
+	}
     }
 }

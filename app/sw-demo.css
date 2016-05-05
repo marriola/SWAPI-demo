@@ -198,6 +198,12 @@ label.dragging {
     height: 100%;
 }
 
+.hidden-columns-expander {
+    font-size: 80%;
+    font-style: italic;
+    text-align: center;
+}
+
 .hidden-col {
     /* color: #888; */
     opacity: 0.33;

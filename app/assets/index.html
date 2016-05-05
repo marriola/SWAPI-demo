@@ -58,21 +58,21 @@
 
     <template id="entity-col-template">
       <span>
-      <!-- Array of URLs -->
-      <template v-if="isArray(value)">
-	<a v-for="(index, url) in value" href="{{ url }}" @click="clickLink(url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
-      </template>
-      
-      <!-- Plain text or single URL -->
-      <template v-else>
-	<!-- Single URL -->
-	<template v-if="hasUrl && value">
-	  <a href="{{ value }}" @click="clickLink(value, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[value] }">{{ linkStore[value] }}</a>
+	<!-- Array of URLs -->
+	<template v-if="isArray(value)">
+	  <a v-for="(index, url) in value" href="{{ url }}" @click="clickLink(url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
 	</template>
+	
+	<!-- Plain text or single URL -->
+	<template v-else>
+	  <!-- Single URL -->
+	  <template v-if="hasUrl && value">
+	    <a href="{{ value }}" @click="clickLink(value, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[value] }">{{ linkStore[value] }}</a>
+	  </template>
 
-	<!-- Plain text -->
-	<template v-else>{{ sanitize(value) }}</template>
-      </template>
+	  <!-- Plain text -->
+	  <template v-else>{{ sanitize(value) }}</template>
+	</template>
       </span>
     </template>
 
@@ -103,7 +103,18 @@
       <div id="table-popup-scroll">
       <table>
 	<tbody>
-	  <tr v-for="row in result" v-bind:class="{ 'hidden-col': !row.show }">
+	  <tr v-for="row in shown">
+	    <td>{{ row.displayName }}</td>
+	    <td><value :has-url="row.hasUrl" :value="row.value" :link-store="linkStore"></value></td>
+	  </tr>
+
+	  <tr v-if="hidden" class="hidden-columns-expander">
+	    <td colspan="2">
+	      <a href="javascript:void(0)" @click="revealHiddenColumns">{{ hidden.length }} more...</a>
+	    </td>
+	  </tr>
+
+	  <tr id="tp-{{ row.name }}" v-for="row in hidden" style="display: none;">
 	    <td>{{ row.displayName }}</td>
 	    <td><value :has-url="row.hasUrl" :value="row.value" :link-store="linkStore"></value></td>
 	  </tr>

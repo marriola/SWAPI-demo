@@ -1,5 +1,5 @@
 import { Controller } from "controllers/controller.js";
-import { mapName } from "utils.js";
+import { cloneTemplate, mapName } from "utils.js";
 import { Ajax } from "ajax.js";
 
 export class ResourcesController extends Controller {
@@ -32,6 +32,7 @@ export class ResourcesController extends Controller {
 
 	    this.viewModel = new Vue({
 		el: "#resources",
+		
 		data: this.model,
 		methods: {
 		    selectResource: this.selectResource

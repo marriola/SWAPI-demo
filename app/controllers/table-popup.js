@@ -1,6 +1,6 @@
 import { TableBaseController } from "controllers/table-base.js"
 import { ColumnValueComponent } from "components/column-val.js"
-import { clone, join } from "utils.js"
+import { cloneTemplate, join } from "utils.js"
 
 export class TablePopupController extends TableBaseController {
     constructor(base, resources, linkStore, linkResolver) {
@@ -53,8 +53,6 @@ export class TablePopupController extends TableBaseController {
 
 	this.ajax.call(url, true)
 	    .then(result => {
-		$("#rest").append(clone($("#table-popup-template"), true));
-
 		result = join(resource.order.map(x => ({ name: x, value: result[x] })),
 			      resource.columns,
 			      (r, c) => r.name == c.name);
@@ -63,9 +61,7 @@ export class TablePopupController extends TableBaseController {
 		let hidden = result.filter(x => !x.show);
 		result = shown.concat(hidden);
 		
-		this.viewmodel = new Vue({
-		    el: "#table-popup",
-
+		this.viewmodel = cloneTemplate("table-popup", {
 		    components: {
 			value: ColumnValueComponent
 		    },

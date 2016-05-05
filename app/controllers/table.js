@@ -1,6 +1,6 @@
 import { TableBaseController } from "controllers/table-base.js";
 import { ColumnValueComponent } from "components/column-val.js";
-import { clone, mapName } from "utils.js";
+import { cloneTemplate, mapName } from "utils.js";
 import { Ajax } from "ajax.js";
 
 export class TableController extends TableBaseController {
@@ -42,14 +42,7 @@ export class TableController extends TableBaseController {
 
 	this.ajax.call(`${resource.name}/?page=${page}`)
 	.then(response => {		
-	    clone($("#table-template"), true)
-		.first()
-		.attr("id", "table")
-		.appendTo($("#rest"));
-
-	    this.viewmodel = new Vue({
-		el: '#table',
-
+	    this.viewmodel = cloneTemplate("table", {
 		components: {
 		    "value": ColumnValueComponent
 		},

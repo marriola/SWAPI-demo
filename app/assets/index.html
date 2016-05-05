@@ -58,19 +58,15 @@
 
     <template id="entity-col-template">
       <span>
-	<!-- Array of URLs -->
 	<template v-if="isArray(value)">
 	  <a v-for="(index, url) in value" href="{{ url }}" @click="clickLink(url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
 	</template>
 	
-	<!-- Plain text or single URL -->
 	<template v-else>
-	  <!-- Single URL -->
 	  <template v-if="hasUrl && value">
 	    <a href="{{ value }}" @click="clickLink(value, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[value] }">{{ linkStore[value] }}</a>
 	  </template>
 
-	  <!-- Plain text -->
 	  <template v-else>{{ sanitize(value) }}</template>
 	</template>
       </span>

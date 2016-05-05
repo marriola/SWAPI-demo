@@ -42,20 +42,6 @@ export function mapName(name, index) {
 }
 
 
-/**
- * Returns a clone of a template element. If the element's ID ends in "-template", that portion is removed from the cloned element.
- *
- * @param $elt {JQuery}			The element to clone
- * @param replace {Boolean}		True if the last cloned element with this ID should be removed
- */
-export function clone($elt, replace=false) {
-    let id = $elt.attr("id").replace("-template", "");
-    if (replace)
-	$("#" + id).remove();
-    return $elt.clone().first().attr("id", id);
-}
-
-
 export function reorder(columns, oldOrder, newOrder) {
     let indices = [];
     for (let col of newOrder) {
@@ -75,4 +61,28 @@ export function join(left, right, predicate) {
     return left.map(l => right.filter(r => predicate(l, r))
 		    .map(match => Object.assign({}, l, match)))
 	.reduce((acc, val) => acc.concat(val), []);
+}
+
+
+/**
+ * Returns a clone of a template element. If the element's ID ends in "-template", that portion is removed from the cloned element.
+ *
+ * @param $elt {JQuery}			The element to clone
+ * @param replace {Boolean}		True if the last cloned element with this ID should be removed
+ */
+function clone($elt, replace=false) {
+    let id = $elt.attr("id").replace("-template", "");
+    if (replace)
+	$("#" + id).remove();
+    return $elt.clone().first().attr("id", id);
+}
+
+
+export function cloneTemplate(id, options, replace=true) {
+    let $template = $(`#${id}-template`);
+    options.el = "#" + id;
+    
+    let element = clone($template, replace);
+    $("#rest").append(element);
+    return new Vue(options);
 }

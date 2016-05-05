@@ -55,6 +55,7 @@ export function clone($elt, replace=false) {
     return $elt.clone().first().attr("id", id);
 }
 
+
 export function reorder(columns, oldOrder, newOrder) {
     let indices = [];
     for (let col of newOrder) {
@@ -69,3 +70,9 @@ export function reorder(columns, oldOrder, newOrder) {
     return out;
 }
 
+
+export function join(left, right, predicate) {
+    return left.map(l => right.filter(r => predicate(l, r))
+		    .map(match => Object.assign({}, l, match)))
+	.reduce((acc, val) => acc.concat(val), []);
+}

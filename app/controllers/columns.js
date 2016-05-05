@@ -36,50 +36,50 @@ export class ColumnsController extends Controller {
 	for (let resource of resources) {
 	    // Initiate call
 	    this.ajax.call(`${resource.name}/schema`)
-		.then((resource => { return response => {
-		    let columnFilter = this.loadFilter(resource);
-		    
-		    // Decorate columns list with these properties:
-		    //
-		    // displayName    A user-friendly version of the column name
-		    // index          The column's index in the list
-		    // show           True if this column is currently visible
-		    // hasUrl         True if this column contains URLs
-		    resource.columns = Object.keys(response.properties).map((x, i) => {
-			let out = mapName(x);
-			out.show = !columnFilter || !!columnFilter[out.name];
-			out.hasUrl = response.properties[x].description.toLowerCase().contains("url");
-			return out;
+	    .then((resource => { return response => {
+		let columnFilter = this.loadFilter(resource);
+
+		// Decorate columns list with these properties:
+		//
+		// displayName    A user-friendly version of the column name
+		// index          The column's index in the list
+		// show           True if this column is currently visible
+		// hasUrl         True if this column contains URLs
+		resource.columns = Object.keys(response.properties).map((x, i) => {
+		    let out = mapName(x);
+		    out.show = !columnFilter || !!columnFilter[out.name];
+		    out.hasUrl = response.properties[x].description.toLowerCase().contains("url");
+		    return out;
+		});
+
+		// Retrieve column order from local storage and reorder if found
+		resource.defaultOrder = resource.columns.map(x => x.name);
+		resource.order = LocalStorage.load(resource.name + ".order");
+		if (resource.order) {
+		    resource.columns = reorder(resource.columns, resource.defaultOrder, resource.order);
+		} else {
+		    resource.order = resource.defaultOrder;
+		}
+
+		// If we've done the last resource, fill and display the column filter view
+		if (++this.retrievedResources == resources.length) {
+		    this.viewmodel = new Vue({
+			el: "#columns",
+			data: { resources },
+			methods: {
+			    showColumns: this.showColumns,
+			    saveFilter: this.saveFilter
+			}
 		    });
 
-		    // Retrieve column order from local storage and reorder if found
-		    resource.defaultOrder = resource.columns.map(x => x.name);
-		    resource.order = LocalStorage.load("order." + resource.name);
-		    if (resource.order) {
-			resource.columns = reorder(resource.columns, resource.defaultOrder, resource.order);
-		    } else {
-			resource.order = resource.defaultOrder;
-		    }
-		    
-		    // If we've done the last resource, fill and display the column filter view
-		    if (++this.retrievedResources == resources.length) {
-			this.viewmodel = new Vue({
-			    el: "#columns",
-			    data: { resources },
-			    methods: {
-				showColumns: this.showColumns,
-				saveFilter: this.saveFilter
-			    }
-			});
-			
-			$("#please-wait").animate({ top: -32 }, 350, "swing", function() {
-    			    this.setupDragAndDropEvents();
-			    $("#controls").slideDown(350);
-			}.bind(this));
-			
-			$("#btnGet").prop("disabled", false);
-		    }
-		} })(resource));
+		    $("#please-wait").animate({ top: -32 }, 350, "swing", function() {
+			$("#controls").slideDown(350);
+			this.setupDragAndDropEvents();
+		    }.bind(this));
+
+		    $("#btnGet").prop("disabled", false);
+		}
+	    } })(resource));
 	}
 
 	if (after)
@@ -190,5 +190,5 @@ export class ColumnsController extends Controller {
 	let page = this.getPageNumber();
 	
 	return $VueDemo.default.resources.model.store[page];
-    }    
+    }
 }

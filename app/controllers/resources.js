@@ -16,31 +16,31 @@ export class ResourcesController extends Controller {
      */
     load(after) {
 	this.ajax.call()
-	    .then(response => {
-		// Decorate resources list with these properties:
-		//
-		// displayName    A user-friendly version of the column name
-		// index          The column's index in the list
-		// columns        A list of this resource's columns
-		// selected       True if this resource is selected for searching
-		this.model.store = Object.keys(response).map((x, i) => {
-		    let out = mapName(x, i);
-		    out.columns = [];
-		    out.selected = false;
-		    return out;
-		});
-
-		this.viewModel = new Vue({
-		    el: "#resources",
-		    data: this.model,
-		    methods: {
-			selectResource: this.selectResource
-		    }
-		});
-		
-		if (after)
-		    after();
+	.then(response => {
+	    // Decorate resources list with these properties:
+	    //
+	    // displayName    A user-friendly version of the column name
+	    // index          The column's index in the list
+	    // columns        A list of this resource's columns
+	    // selected       True if this resource is selected for searching
+	    this.model.store = Object.keys(response).map((x, i) => {
+		let out = mapName(x, i);
+		out.columns = [];
+		out.selected = false;
+		return out;
 	    });
+
+	    this.viewModel = new Vue({
+		el: "#resources",
+		data: this.model,
+		methods: {
+		    selectResource: this.selectResource
+		}
+	    });
+
+	    if (after)
+		after();
+	});
     }
 
     

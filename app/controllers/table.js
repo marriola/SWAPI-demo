@@ -1,4 +1,5 @@
 import { TableBaseController } from "controllers/table-base.js";
+import { ColumnValueComponent } from "components/column-val.js";
 import { clone, mapName } from "utils.js";
 import { Ajax } from "ajax.js";
 
@@ -40,33 +41,41 @@ export class TableController extends TableBaseController {
 	$("#spinner").show();
 
 	this.ajax.call(`${resource.name}/?page=${page}`)
-	    .then(response => {		
-		clone($("#table-template"), true)
-		    .first()
-		    .attr("id", "table")
-		    .appendTo($("#rest"));
-		
-		this.viewmodel = new Vue({
-		    el: '#table',
-		    data: {
-			pageStart: (this.page - 1) * 10 + 1,
-			pageEnd: (this.page - 1) * 10 + response.results.length,
-			count: response.count,
-			resource: resource,
-			results: response.results,
-			linkStore: this.linkStore.store
-		    },
-		    methods: $.extend({}, this.baseMethods, { showOnMobile: this.showOnMobile })
-		});
-		
-		$("#btnPrev").prop("disabled", !response.previous);
-		$("#btnNext").prop("disabled", !response.next);
-		$("#spinner").hide();
-		$("html, body").animate({ scrollTop: 0 });
-		$("#table").show();
+	.then(response => {		
+	    clone($("#table-template"), true)
+		.first()
+		.attr("id", "table")
+		.appendTo($("#rest"));
 
-	    	this.linkResolver.resolve("#table");
+	    this.viewmodel = new Vue({
+		el: '#table',
+
+		components: {
+		    "value": ColumnValueComponent
+		},
+		
+		data: {
+		    pageStart: (this.page - 1) * 10 + 1,
+		    pageEnd: (this.page - 1) * 10 + response.results.length,
+		    count: response.count,
+		    resource: resource,
+		    results: response.results,
+		    linkStore: this.linkStore.store
+		},
+		
+		methods: {
+		    showOnMobile: this.showOnMobile
+		}
 	    });
+
+	    $("#btnPrev").prop("disabled", !response.previous);
+	    $("#btnNext").prop("disabled", !response.next);
+	    $("#spinner").hide();
+	    $("html, body").animate({ scrollTop: 0 });
+	    $("#table").show();
+
+	    this.linkResolver.resolve("#table");
+	});
     }
 
     showOnMobile(name) {

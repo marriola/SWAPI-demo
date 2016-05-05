@@ -1,4 +1,5 @@
 import { TableBaseController } from "controllers/table-base.js"
+import { ColumnValueComponent } from "components/column-val.js"
 import { clone, join } from "utils.js"
 
 export class TablePopupController extends TableBaseController {
@@ -64,12 +65,16 @@ export class TablePopupController extends TableBaseController {
 		
 		this.viewmodel = new Vue({
 		    el: "#table-popup",
+
+		    components: {
+			value: ColumnValueComponent
+		    },
+
 		    data: {
 			columns,
 			result,
 			linkStore: this.linkStore.store
-		    },
-		    methods: this.baseMethods
+		    }
 		});
 
 		this.linkResolver.resolve("#table-popup");
@@ -77,8 +82,5 @@ export class TablePopupController extends TableBaseController {
 		if (callback)
 		    callback();
 	    });
-    }
-
-    arrayify(result, columns) {
     }
 }

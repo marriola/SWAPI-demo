@@ -56,6 +56,27 @@
 
     <!-- Templates -->
 
+    <template id="entity-col-template">
+      <span>
+      <!-- Array of URLs -->
+      <template v-if="isArray(value)">
+	<a v-for="(index, url) in value" href="{{ url }}" @click="clickLink(url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
+      </template>
+      
+      <!-- Plain text or single URL -->
+      <template v-else>
+	<!-- Single URL -->
+	<template v-if="hasUrl && value">
+	  <a href="{{ value }}" @click="clickLink(value, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[value] }">{{ linkStore[value] }}</a>
+	</template>
+
+	<!-- Plain text -->
+	<template v-else>{{ sanitize(value) }}</template>
+      </template>
+      </span>
+    </template>
+
+
     <div id="table-template" style="display: none;">
       <p>Displaying results <b>{{ pageStart }}</b> to <b>{{ pageEnd }}</b> out of <b>{{ count }}</b></p>
 
@@ -69,27 +90,14 @@
 	<tbody>
 	  <tr v-for="result in results">	    
 	    <td v-for="column in resource.columns" v-if="column.show" transition="fade-out" :mobile="showOnMobile(column.name) ? 'yes' : null">
-	      <!-- Array of URLs -->
-	      <template v-if="isArray(result[column.name])">
-		<a v-for="(index, url) in result[column.name]" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
-	      </template>
-	      <!-- Either plain text or single URL -->
-	      <template v-else>
-		<!-- Single URL -->
-		<template v-if="column.hasUrl && result[column.name]">
-		  <a href="{{ result[column.name] }}" class="link" v-bind:class="{ 'not-set': !linkStore[result[column.name]] }" @click="clickLink(column, result[column.name], $event)">{{ linkStore[result[column.name]] }}</a>
-		</template>
-		<!-- Plain text -->
-		<template v-else>
-		  {{ sanitize(result[column.name]) }}
-		</template>
-	      </template>
+	      <value :has-url="column.hasUrl" :value="result[column.name]" :link-store="linkStore"></value>
 	    </td>
 	  </tr>
 	</tbody>
       </table>	
     </div>
 
+    
     <div id="table-popup-template" style="display: none">
       <a id="btnClose" class="link" href="javascript:$VueDemo.default.tablePopup.hideOverlay()">[x]</a>
       <div id="table-popup-scroll">
@@ -97,22 +105,7 @@
 	<tbody>
 	  <tr v-for="row in result" v-bind:class="{ 'hidden-col': !row.show }">
 	    <td>{{ row.displayName }}</td>
-	    
-	    <!-- Array of URLs -->
-	    <td v-if="isArray(row.value)">
-	      <a v-for="(index, url) in row.value" href="{{ url }}" @click="clickLink(column, url, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[url] }">{{ linkStore[url] }}</a>
-	    </td>
-	    
-	    <!-- Plain text or single URL -->
-	    <td v-else>
-	      <!-- Single URL -->
-	      <template v-if="row.hasUrl && row.value">
-		<a href="{{ row.value }}" @click="clickLink(column, row.value, $event)" class="link" v-bind:class="{ 'not-set': !linkStore[row.value] }">{{ linkStore[row.value] }}</a>
-	      </template>
-
-	      <!-- Plain text -->
-	      <template v-else>{{ sanitize(row.value) }}</template>
-	    </td>
+	    <td><value :has-url="row.hasUrl" :value="row.value" :link-store="linkStore"></value></td>
 	  </tr>
 	</tbody>
       </table>
@@ -121,7 +114,7 @@
 
 
     <!--<script src="https://code.jquery.com/jquery-2.2.3.js"></script>-->
-    <!--<script src="http://cdn.jsdelivr.net/vue/1.0.16/vue.js"></script>-->
+    <!-- <script src="http://cdn.jsdelivr.net/vue/1.0.16/vue.js"></script> -->
     <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/vue/1.0.21/vue.min.js"></script>
     <script src="vendor.js" type="text/javascript"></script>

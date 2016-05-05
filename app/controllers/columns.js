@@ -1,7 +1,7 @@
 import { Controller } from "controllers/controller.js";
 import { LocalStorage } from "local-storage.js";
 import { Ajax } from "ajax.js";
-import { mapName, reorder } from "utils.js";
+import { cloneTemplate, mapName, reorder } from "utils.js";
 
 export class ColumnsController extends Controller {
     constructor(base) {
@@ -64,8 +64,10 @@ export class ColumnsController extends Controller {
 		// If we've done the last resource, fill and display the column filter view
 		if (++this.retrievedResources == resources.length) {
 		    this.viewmodel = new Vue({
-			el: "#columns",
+			el: "#columnFilter",
+			
 			data: { resources },
+			
 			methods: {
 			    showColumns: this.showColumns,
 			    saveFilter: this.saveFilter
@@ -142,7 +144,7 @@ export class ColumnsController extends Controller {
 		
 		// Reorder columns and save column order
 		resource.columns = reorder(resource.columns, oldOrder, resource.order);
-		LocalStorage.save("order." + resource.name, resource.order);
+		LocalStorage.save(resource.name + ".order", resource.order);
 	    });
 	
 	$(".columnContainer").on("dragover", e => {

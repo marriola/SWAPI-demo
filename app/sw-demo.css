@@ -115,10 +115,14 @@ button[disabled] {
     transition: background-color 0.2s, border 0.2s;
 }
 
+.columnContainer label:hover {
+    background-color: #333;
+}
+
 label.dragging {
     cursor: -webkit-grabbing;
     cursor: grabbing;
-    opacity: 0.75;
+    /* opacity: 0.75; */
     background-color: black;
     border: 1px dashed #666;
 }
@@ -143,6 +147,8 @@ label.dragging {
 .columnNameHeader > a {
     padding-left: 10px;
     padding-right: 10px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .columnName {
@@ -204,9 +210,8 @@ label.dragging {
     text-align: center;
 }
 
-.hidden-col {
-    /* color: #888; */
-    opacity: 0.33;
+.hidden-column {
+    display: none;
 }
 
 .link {
@@ -264,7 +269,7 @@ tr:nth-child(odd) {
 	display: none;
     }
 
-    #table td:not([mobile]), #table th:not([mobile]) {
+    #table td:not(.mobile), #table th:not(.mobile) {
         display: none;
     }
 
@@ -300,4 +305,12 @@ tr:nth-child(odd) {
 .fade-out-enter, .fade-out-leave {
     opacity: 0;
     width: 0px;
+}
+
+.slide-transition {
+    transition: height .3s ease;
+}
+
+.slide-enter, .slide-leave {
+    height: 0px;
 }

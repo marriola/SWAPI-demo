@@ -14,18 +14,33 @@ export class ColumnsController extends Controller {
     }
 
     
-    setupEventHandlers() {	
+    setupEventHandlers() {
 	$("#columnFilterExpand").on("click", e => {
-	    let open = $("#expandIndicator").hasClass("open");
+	    e.stopPropagation();
+	    this.toggleColumnFilter();
+	});
+
+	$(document).on("click", e => {
+	    if ($(e.target).parents("#columns").length != 0)
+		return;
 	    
-	    if (open) {
-		$("#expandIndicator").removeClass("open").addClass("closed");
-		$("#columns").toggle(500);
-	    } else {
-		$("#expandIndicator").removeClass("closed").addClass("open");
-		$("#columns").toggle(500);
+	    if ($("#columns").is(":visible")) {
+		this.toggleColumnFilter();
 	    }
-	});	
+	});
+    }
+
+
+    toggleColumnFilter() {
+	let isOpen = $("#expandIndicator").hasClass("open");
+	
+	if (isOpen) {
+	    $("#expandIndicator").removeClass("open").addClass("closed");
+	    $("#columns").toggle(250);
+	} else {
+	    $("#expandIndicator").removeClass("closed").addClass("open");
+	    $("#columns").toggle(250);
+	}
     }
 
     
@@ -74,7 +89,7 @@ export class ColumnsController extends Controller {
 			}
 		    });
 
-		    $("#please-wait").animate({ top: -32 }, 350, "swing", function() {
+		    $("#please-wait").animate({ top: -32 }, 250, "swing", function() {
 			$("#controls").slideDown(350);
 			this.setupDragAndDropEvents();
 		    }.bind(this));
@@ -97,10 +112,10 @@ export class ColumnsController extends Controller {
 	$(`.columnName[data-index='${resource.index}']`).addClass("selected");
 	
 	if ($(".columnPage:visible").length == 0) {
-	    $(`.columnPage[data-index='${resource.index}']`).slideDown(250);
+	    $(`.columnPage[data-index='${resource.index}']`).slideDown(200);
 	} else {
-	    $(".columnPage:visible").fadeOut(250, function() {
-		$(`.columnPage[data-index='${resource.index}']`).fadeIn(250);
+	    $(".columnPage:visible").fadeOut(200, function() {
+		$(`.columnPage[data-index='${resource.index}']`).fadeIn(200);
 	    });
 	}				
     }

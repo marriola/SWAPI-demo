@@ -58,7 +58,8 @@ export function reorder(columns, oldOrder, newOrder) {
 
 
 export function join(left, right, predicate) {
-    return left.map(l => right.filter(r => predicate(l, r))
+    return left.map(l => right
+		    .filter(r => predicate(l, r))
 		    .map(match => Object.assign({}, l, match)))
 	.reduce((acc, val) => acc.concat(val), []);
 }

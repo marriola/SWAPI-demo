@@ -6,6 +6,14 @@ export class TablePopupController extends TableBaseController {
     constructor(base, resources, linkStore, linkResolver) {
 	super(base, resources, linkStore, linkResolver);
 
+	this.model = {
+	    columns: [],
+	    shown: [],
+	    hidden: [],
+	    showHidden: false,
+	    linkStore: {}
+	};
+	
 	this.setupEventHandlers();
     }
 
@@ -49,30 +57,25 @@ export class TablePopupController extends TableBaseController {
 	if (!resource)
 	    return;
 	
-	let columns = resource.columns;
-
 	this.ajax.call(url, true)
 	    .then(result => {
 		result = join(resource.order.map(x => ({ name: x, value: result[x] })),
 			      resource.columns,
 			      (r, c) => r.name == c.name);
 
-		let shown = result.filter(x => x.show);
-		let hidden = result.filter(x => !x.show);
-		result = shown.concat(hidden);
+		this.model.columns = resource.columns;
+		this.model.shown = result.filter(x => x.show);
+		this.model.hidden = result.filter(x => !x.show);
+		this.model.linkStore = this.linkStore.store;
+		this.model.showHidden = false;
 		
 		this.viewmodel = cloneTemplate("table-popup", {
 		    components: {
 			value: ColumnValueComponent
 		    },
 
-		    data: {
-			columns,
-			shown,
-			hidden,
-			linkStore: this.linkStore.store
-		    },
-
+		    data: this.model,
+		    
 		    methods: {
 			revealHiddenColumns: this.revealHiddenColumns
 		    }
@@ -86,19 +89,12 @@ export class TablePopupController extends TableBaseController {
     }
 
     revealHiddenColumns() {
-	for (let column of this.$data.hidden) {
-	    let $expander = $("#table-popup .hidden-columns-expander");
-	    let $scroll = $("#table-popup-scroll");
-	    
-	    $scroll.animate({
-		scrollTop: $scroll.offset().top + $scroll.outerHeight()
-	    });
+	let $scroll = $("#table-popup-scroll");
 
-	    $expander.slideUp(() => {
-		$expander.remove();
-	    });
-
-	    $("#table-popup #tp-" + column.name).slideDown();
-	}
+	$scroll.animate({
+	    slideTop: $scroll.offset().top + $scroll.offsetHeight()
+	});
+	
+	this.model.showHidden = true;
     }
 }

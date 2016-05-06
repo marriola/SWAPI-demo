@@ -34,7 +34,7 @@
 	<div id="columns" style="display: none;">
 	  <div class="columnNameHeader">
 	    <a v-for="resource in resources" href="javascript:void(0)" class="columnName" @click="showColumns(resource)" data-index="{{ resource.index }}">
-	      <h4>{{ resource.displayName }}</h4>
+	      {{ resource.displayName }}
 	    </a>
 	  </div>
 
@@ -79,13 +79,13 @@
       <table>
 	<thead>
 	  <tr>
-	    <th v-for="column in resource.columns" v-if="column.show" transition="fade-out" :mobile="showOnMobile(column.name) ? 'yes' : null">{{ column.displayName }}</th>
+	    <th v-for="column in resource.columns" v-if="column.show" transition="fade-out" v-class:bind="{ 'mobile': showOnMobile(column.name) }">{{ column.displayName }}</th>
 	  </tr>
 	</thead>
 	
 	<tbody>
 	  <tr v-for="result in results">	    
-	    <td v-for="column in resource.columns" v-if="column.show" transition="fade-out" :mobile="showOnMobile(column.name) ? 'yes' : null">
+	    <td v-for="column in resource.columns" v-if="column.show" transition="fade-out" v-class:bind="{ 'mobile': showOnMobile(column.name) }">
 	      <value :has-url="column.hasUrl" :value="result[column.name]" :link-store="linkStore"></value>
 	    </td>
 	  </tr>
@@ -104,15 +104,23 @@
 	    <td><value :has-url="row.hasUrl" :value="row.value" :link-store="linkStore"></value></td>
 	  </tr>
 
-	  <tr v-if="hidden" class="hidden-columns-expander">
+	  <tr v-if="hidden.length > 0" v-bind:class="{ 'hidden-column': showHidden }">
 	    <td colspan="2">
-	      <a href="javascript:void(0)" @click="revealHiddenColumns">{{ hidden.length }} more...</a>
+	      <div class="hidden-columns-expander" v-bind:class="{ 'hidden-column': showHidden }" transition="slide">
+		<a href="javascript:void(0)" @click="showHidden = true">{{ hidden.length }} more...</a>
+	      </div>
 	    </td>
 	  </tr>
 
-	  <tr id="tp-{{ row.name }}" v-for="row in hidden" style="display: none;">
-	    <td>{{ row.displayName }}</td>
-	    <td><value :has-url="row.hasUrl" :value="row.value" :link-store="linkStore"></value></td>
+	  <tr v-for="row in hidden" v-bind:class="{ 'hidden-column': !showHidden }">
+	    <td>
+	      <div class="hidden-column" v-bind:class="{ 'hidden-column': !showHidden }" transition="slide">
+		{{ row.displayName }}
+	      </div>
+	    </td>
+	    <td>
+	      <value :has-url="row.hasUrl" :value="row.value" :link-store="linkStore" v-bind:class="{ 'hidden-column': !showHidden }" transition="slide"></value>
+	    </td>
 	  </tr>
 	</tbody>
       </table>
